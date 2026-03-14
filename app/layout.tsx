@@ -24,10 +24,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
+      <div className="flex flex-row min-h-screen  bg-linear-to-br from-purple-900 via-indigo-900 to-blue-800">
+          <div className="flex flex-col min-h-screen bg-black text-white w-64 p-6 border-r border-indigo-400 sticky">
+            <p>Sidebar Soon..</p>
+          </div>
+
+          <div className="flex-1 overflow-auto">
         {children}
+          </div>
+
+      </div>
       </body>
     </html>
   );
