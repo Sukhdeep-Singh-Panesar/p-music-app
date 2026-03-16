@@ -27,8 +27,17 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 
       <div className="flex flex-row min-h-screen  bg-linear-to-br from-purple-900 via-indigo-900 to-blue-800">
-          <div className="flex flex-col min-h-screen bg-black text-white w-64 p-6 border-r border-indigo-400 sticky">
-            <p>Sidebar Soon..</p>
+          <div className="flex flex-col min-h-screen bg-black text-white w-64 p-2 border-r border-indigo-400 sticky">
+              <h2 className="text-center text-xl mb-8 text-indigo-300 font-bold ">P Music</h2> {/*heading making of p music*/}
+              <nav> {/* links of app*/}
+                  <ul className={'flex flex-col gap-1 text-center text-lg list-none'}>
+                      <li><a href="#" className="block py-2 px-4 rounded-md text-indigo-400  bg-indigo-950/70 transition-colors duration-300">🏠 Home </a></li>
+                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300"> 🔍 Search </a></li>
+                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300"> 🎵 Library </a></li>
+                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300"> ✨ Explore </a></li>
+                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300">🎧 Playlist</a> </li>
+                  </ul>
+              </nav>
           </div>
 
           <div className="flex-1 overflow-auto">
