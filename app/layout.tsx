@@ -43,9 +43,9 @@ export default function RootLayout({
           </div>
 
           <div className="flex-1 overflow-auto">
-        {children}
-          </div>
-
+             {children}
+                </div>
+          <div className="h-20 w-full flex-3 overflow-auto bg-gray-950 fixed bottom-0 left-0 right-0 border-t border-b-gray-800"></div>
       </div>
       </body>
     </html>
