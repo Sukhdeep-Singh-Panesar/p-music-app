@@ -5,9 +5,9 @@ export default function Home() {
           P Music App
         </h1>
         <p className="text-xl text-gray-300 mb-8">
-          Coming Soon – Like Spotify, Now in Development!
+          Coming Soon – Better than Spotify or any other music app, Now in Development!!
         </p>
-        <div className="text-4xl">🎵🔥</div>
+        <div className="text-4xl"></div>
       </div>
   );
 }
