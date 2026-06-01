@@ -1,1 +1,1 @@
-P Music App made using Next.js, Tailwind CSS, Shadcn UI
+P Music App made using Next.js, Typescript, Tailwind CSS, Shadcn UI
