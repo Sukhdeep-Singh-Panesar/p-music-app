@@ -33,7 +33,7 @@ export default function RootLayout({
           <div className="flex flex-col min-h-screen bg-black text-white w-64 p-2 border-r border-indigo-400 fixed inset-y-0 left-0">
               <h2 className="text-center text-xl mb-8 text-indigo-300 font-bold ">P Music</h2> {/*heading making of p music*/}
 
-              {/* links of app*/}
+              {/* links*/}
               <nav>
                   <ul className={'flex flex-col gap-1 text-center text-lg list-none'}>
                       <li><a href="#" className="block py-2 px-4 rounded-md text-indigo-400  bg-indigo-950/70 transition-colors duration-300">🏠 Home </a></li>
