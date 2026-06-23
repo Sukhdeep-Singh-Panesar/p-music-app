@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                                     {/* ==================== MAIN APP CONTAINER ==================== */}
+                                     {/*  MAIN APP CONTAINER  */}
       <div className="flex flex-row min-h-screen  bg-linear-to-br from-purple-900 via-indigo-900 to-blue-800">
 
-                                 {/* ==================== LEFT SIDEBAR ==================== */}
+                                 {/*  LEFT SIDEBAR  */}
           <div className="flex flex-col min-h-screen bg-black text-white w-64 p-2 border-r border-indigo-400 fixed inset-y-0 left-0">
               <h2 className="text-center text-xl mb-8 text-indigo-300 font-bold ">P Music</h2> {/*heading making of p music*/}
 
@@ -46,14 +46,14 @@ export default function RootLayout({
 
           </div>
 
-          {/* ==================== MAIN CONTENT AREA ==================== */}
+          {/*  MAIN CONTENT AREA  */}
           <div className="flex-1 overflow-auto pb-24">
              {children}
                 </div>
       </div>
-                                     {/* ==================== MAIN APP CONTAINER Done ==================== */}
+                                     {/*  MAIN APP CONTAINER Done  */}
 
-                                     {/* ==================== BOTTOM PLAYER BAR ==================== */}
+                                     {/*  BOTTOM PLAYER BAR  */}
 
              <div className="flex items-center justify-between px-6 h-20 w-full bg-gray-950 fixed bottom-0 left-0 right-0 border-t border-gray-800 z-50"> {/*bottom bar making of p music*/}
 
