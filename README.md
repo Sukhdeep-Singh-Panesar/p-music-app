@@ -1,4 +1,4 @@
-# P Music App Website
+# P Music App
 
-## Frontend made using Next.js, Typescript, Tailwind CSS, 
-Shadcn UI for Designing
+A music app frontend built with Next.js,
+TypeScript, Tailwind CSS, and shadcn/ui.
