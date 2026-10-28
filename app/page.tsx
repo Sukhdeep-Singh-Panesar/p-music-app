@@ -1,3 +1,5 @@
+import WelcomeMessage from "./components/WelcomeMessage";
+
 export default function Home() {
     const message = "Discover your next favorite track";
   return (
@@ -5,9 +7,7 @@ export default function Home() {
         <h1 className="text-6xl font-bold mb-4 text-blue-300">
           P Music App
         </h1>
-        <p className="text-xl text-gray-300 mb-8">
-          {message}
-        </p>
+        <WelcomeMessage message={message} />
         <div className="text-4xl"></div>
       </div>
   );
