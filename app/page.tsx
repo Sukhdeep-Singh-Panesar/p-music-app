@@ -9,11 +9,11 @@ export default function Home() {
           P Music App
         </h1>
         <WelcomeMessage message={message} />
-        <div className="text-4xl"></div>
           <TaskCard
               title="Afterglow"
               artist="P Music Sessions"
           />
+        <div className="text-4xl"></div>
       </div>
   );
 }
