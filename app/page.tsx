@@ -1,5 +1,5 @@
 import WelcomeMessage from "./components/WelcomeMessage";
-import TaskCard from "./components/TaskCard";
+import TrackCard from "./components/TrackCard";
 
 export default function Home() {
     const message = "Discover your next favorite track";
@@ -9,7 +9,7 @@ export default function Home() {
           P Music App
         </h1>
         <WelcomeMessage message={message} />
-          <TaskCard
+          <TrackCard
               title="Afterglow"
               artist="P Music Sessions"
           />
