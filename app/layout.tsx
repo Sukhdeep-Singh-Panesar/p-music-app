@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Sidebar from "./components/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,30 +26,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
                                      {/*  MAIN APP CONTAINER  */}
-      <div className="flex flex-row min-h-screen  bg-linear-to-br from-purple-900 via-indigo-900 to-blue-800">
 
-                                 {/*  LEFT SIDEBAR  */}
-          <div className="flex flex-col min-h-screen bg-black text-white w-64 p-2 border-r border-indigo-400 fixed inset-y-0 left-0">
-              <h2 className="text-center text-xl mb-8 text-indigo-300 font-bold ">P Music</h2> {/*heading making of p music*/}
-
-              {/* links*/}
-              <nav>
-                  <ul className={'flex flex-col gap-1 text-center text-lg list-none'}>
-                      <li><a href="#" className="block py-2 px-4 rounded-md text-indigo-400  bg-indigo-950/70 transition-colors duration-300">🏠 Home </a></li>
-                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300"> 🔍 Search </a></li>
-                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300"> 🎵 Library </a></li>
-                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300"> ✨ Explore </a></li>
-                      <li><a href="#" className="block py-2 px-4 rounded-md hover:text-indigo-400  hover:bg-indigo-950/70 transition-colors duration-300">🎧 Playlist</a> </li>
-                  </ul>
-              </nav>
-
-          </div>
+      <div className="flex flex-row min-h-screen bg-[#0f172a] ">
+          {/*  LEFT SIDEBAR  */}
+        <Sidebar />
 
           {/*  MAIN CONTENT AREA  */}
-          <div className="flex-1 overflow-auto pb-24">
-             {children}
-                </div>
+          <div className="min-w-0 flex-1 overflow-auto pb-24 md:ml-56">
+              {children}
+          </div>
       </div>
                                      {/*  MAIN APP CONTAINER Done  */}
 
