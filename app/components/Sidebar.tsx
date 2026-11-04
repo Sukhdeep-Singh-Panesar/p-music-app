@@ -1,3 +1,5 @@
+"use client";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const playlists = [
@@ -19,6 +21,7 @@ const playlists = [
 ];
 
 export default function Sidebar() {
+    const pathname = usePathname();
     return (
         <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 border-r border-[#2a3650] bg-[#0b1120] px-[18px] pt-8 text-[#f7f8ff] md:flex md:flex-col md:gap-7">
 
@@ -33,15 +36,28 @@ export default function Sidebar() {
 
                 <Link
                     href="/"
-                    aria-current="page"
-                    className="flex h-[46px] items-center rounded-lg bg-[#262647] px-[14px] text-[13px] font-semibold"
+                    aria-current={pathname === "/" ? "page" : undefined}
+                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
+                        pathname === "/"
+                            ? "bg-[#262647] text-white"
+                            : "text-[#a6b2ca] hover:text-white"
+                    }`}
                 >
                     Discover
                 </Link>
 
-                <span className="px-[14px] py-3 text-[13px] text-[#a6b2ca]">
-          Your Library
-        </span>
+
+                <Link
+                    href="/library"
+                    aria-current={pathname === "/library" ? "page" : undefined}
+                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
+                        pathname === "/library"
+                            ? "bg-[#262647] text-white"
+                            : "text-[#a6b2ca] hover:text-white"
+                    }`}
+                >
+                    Your Library
+                </Link>
 
                 <span className="px-[14px] py-3 text-[13px] text-[#a6b2ca]">
           Now Playing
