@@ -26,12 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+
                                      {/*  MAIN APP CONTAINER  */}
-      <div className="flex flex-row min-h-screen  bg-linear-to-br bg-[#0f172a] via-indigo-900 to-blue-800">
+
+      <div className="flex flex-row min-h-screen bg-[#0f172a] ">
           {/*  LEFT SIDEBAR  */}
         <Sidebar />
-
-
 
           {/*  MAIN CONTENT AREA  */}
           <div className="min-w-0 flex-1 overflow-auto pb-24 md:ml-56">
