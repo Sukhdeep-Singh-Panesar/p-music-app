@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 const playlists = [
+    // Sidebar playlist data
+
     {
         id: "afterglow",
         name: "Afterglow",
@@ -20,6 +22,9 @@ const playlists = [
 
 export default function Sidebar() {
     return (
+
+        /* Sidebar component for the music app */
+
         <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 border-r border-[#2a3650] bg-[#0b1120] px-[18px] pt-8 text-[#f7f8ff] md:flex md:flex-col md:gap-7">
 
             <Link href="/" className="text-[22px] font-bold">
@@ -47,6 +52,9 @@ export default function Sidebar() {
           Now Playing
         </span>
             </nav>
+
+
+            {/* Your playlists section*/}
             <section className="border-t border-[#2a3650] pt-5">
                 <h2 className="text-[10px] font-semibold text-[#7786a4]">
                     YOUR PLAYLISTS
