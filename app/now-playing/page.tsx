@@ -1,3 +1,6 @@
+"use client";
+import { useState } from "react";
+
 type Track = {
     id: string;
     title: string;
@@ -11,6 +14,9 @@ const currentTrack: Track = {
 };
 
 export default function NowPlayingPage() {
+
+    const [isPlaying, setIsPlaying] = useState(false);
+
     return (
         <main className="p-8">
             <h1 className="text-3xl font-bold text-white">
@@ -42,7 +48,7 @@ export default function NowPlayingPage() {
                 </div>
 
                 <div className="mt-6 flex items-center justify-center gap-8">
-                    {/* Add your three buttons here */}
+
                     <button
                         type="button"
                         className="text-2xl text-white hover:text-indigo-300"
@@ -53,9 +59,14 @@ export default function NowPlayingPage() {
                     <button
                         type="button"
                         className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-500 text-2xl text-white hover:bg-indigo-400"
+                        onClick={() => setIsPlaying((previous) => !previous)}
                     >
-                        <span className="sr-only">Play</span>
-                        <span aria-hidden="true">▶</span>
+                        <span className="sr-only">
+                          {isPlaying ? "Pause" : "Play"}
+                        </span>
+                        <span aria-hidden="true">
+                          {isPlaying ? "⏸" : "▶"}
+                        </span>
                     </button>
                     <button type="button"
                             className="text-2xl text-white hover:text-indigo-300"
