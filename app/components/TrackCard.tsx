@@ -1,5 +1,6 @@
+"use client";
 import Link from "next/link";
-
+import { usePlayer } from "./PlayerProvider";
 type TrackCardProps = {
     id: string;
     title: string;
@@ -11,9 +12,11 @@ export default function TrackCard({
                                      title,
                                       artist,
                                   }: TrackCardProps) {
+    const { selectTrack } = usePlayer();
     return (
 
         <Link
+            onClick={() => selectTrack({ id, title, artist })}
             href={`/now-playing?trackId=${encodeURIComponent(id)}`}
             className="block rounded-lg bg-indigo-950 p-4 hover:bg-indigo-900"
         >

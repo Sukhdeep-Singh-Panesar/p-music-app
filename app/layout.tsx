@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { PlayerProvider } from "./components/PlayerProvider";
+import PlayerStatus from "./components/PlayerStatus";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,8 +50,7 @@ export default function RootLayout({
               <div className={'flex gap-4 items-center shrink-0 w-72'}>
                   <div className="w-12 h-12 bg-gray-700 rounded"></div>
                   <div>
-                  <div className={'font-medium text-sm'}>Blinding Lights</div>
-                  <div className={'text-xs text-gray-400'}>The Weeknd</div>
+                      <PlayerStatus />
                   </div>
               </div>
 
