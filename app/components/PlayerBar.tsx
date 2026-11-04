@@ -2,10 +2,31 @@
 
 import { usePlayer } from "./PlayerProvider";
 import PlayerStatus from "./PlayerStatus";
+import { useRef, useState } from "react";
 
 export default function PlayerBar() {
     const { currentTrack } = usePlayer();
+    const audioRef = useRef<HTMLAudioElement | null>(null);
 
+    const [playingTrackId, setPlayingTrackId] =
+        useState<string | null>(null);
+
+    const isPlaying =
+        currentTrack !== null && playingTrackId === currentTrack.id;
+
+    function togglePlayback() {
+        const audio = audioRef.current;
+
+        if (!audio) return;
+
+        if (audio.paused) {
+            void audio.play().catch((error) => {
+                console.error("Audio playback failed:", error);
+            });
+        } else {
+            audio.pause();
+        }
+    }
     return (
         <footer
             aria-label="Music player"
@@ -15,8 +36,21 @@ export default function PlayerBar() {
                 <PlayerStatus />
             </div>
 
-            {currentTrack ? (
+            {currentTrack  ? (
+
+                <div className="flex flex-col items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={togglePlayback}
+                        className="rounded-lg bg-indigo-500 px-4 py-2 text-sm text-white"
+                    >
+                        {isPlaying ? "Pause" : "Play"}
+                    </button>
                 <audio
+                    ref={audioRef}
+                    onPlay={() => setPlayingTrackId(currentTrack.id)}
+                    onPause={() => setPlayingTrackId(null)}
+                    onEnded={() => setPlayingTrackId(null)}
                     key={currentTrack.id}
                     controls
                     preload="metadata"
@@ -26,6 +60,7 @@ export default function PlayerBar() {
                 >
                     Your browser does not support audio playback.
                 </audio>
+              </div>
             ) : (
                 <p className="text-sm text-gray-400">
                     Choose a track to start listening
