@@ -76,6 +76,7 @@ export default async function SearchPage({
                     )}
                     {tracks.map((track) => (
                         <TrackCard
+                            id={track.id}
                             key={track.id}
                             title={track.title}
                             artist={track.user.name}
