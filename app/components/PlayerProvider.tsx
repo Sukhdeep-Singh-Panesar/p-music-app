@@ -7,7 +7,7 @@ import {
     type ReactNode,
 } from "react";
 
-type PlayerTrack = {
+export type PlayerTrack = {
     id: string;
     title: string;
     artist: string;

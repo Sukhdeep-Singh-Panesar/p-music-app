@@ -1,3 +1,5 @@
+import NowPlayingDetails from "../components/NowPlayingDetails";
+
 type AudiusTrack = {
     id: string;
     title: string;
@@ -18,16 +20,8 @@ export default async function NowPlayingPage({
     const { trackId } = await searchParams;
 
     if (!trackId) {
-        return (
-            <main className="p-8 text-white">
-                <h1 className="text-3xl font-bold">Now Playing</h1>
-                <p className="mt-4 text-gray-400">
-                    Choose a track from Discover or Search.
-                </p>
-            </main>
-        );
+        return <NowPlayingDetails />;
     }
-
     const response = await fetch(
         `https://api.audius.co/v1/tracks/${encodeURIComponent(trackId)}`,
         { cache: "no-store" }
@@ -41,25 +35,12 @@ export default async function NowPlayingPage({
     const track = result.data;
 
     return (
-        <main className="p-8">
-            <h1 className="text-3xl font-bold text-white">
-                Now Playing
-            </h1>
-
-            <div className="mt-6 flex flex-col items-center text-center">
-                <div className="mb-6 flex aspect-square w-64 items-center justify-center rounded-xl bg-[#27264c]">
-                    <span className="text-6xl" aria-hidden="true">🎵</span>
-                </div>
-
-                <h2 className="text-3xl font-bold text-white">
-                    {track.title}
-                </h2>
-
-                <p className="mt-2 text-gray-400">
-                    by {track.user.name}
-                </p>
-
-            </div>
-        </main>
+        <NowPlayingDetails
+            routeTrack={{
+                id: track.id,
+                title: track.title,
+                artist: track.user.name,
+            }}
+        />
     );
 }
