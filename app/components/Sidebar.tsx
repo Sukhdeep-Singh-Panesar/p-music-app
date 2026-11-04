@@ -23,7 +23,7 @@ const playlists = [
 export default function Sidebar() {
     const pathname = usePathname();
     return (
-        <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 border-r border-[#2a3650] bg-[#0b1120] px-[18px] pt-8 text-[#f7f8ff] md:flex md:flex-col md:gap-7">
+        <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 border-r border-[#2a3650] bg-[#0b1120] px-4.5 pt-8 text-[#f7f8ff] md:flex md:flex-col md:gap-7">
 
             <Link href="/" className="text-[22px] font-bold">
                 P Music<span className="text-[#6366f1]">.</span>
@@ -59,9 +59,19 @@ export default function Sidebar() {
                     Your Library
                 </Link>
 
-                <span className="px-[14px] py-3 text-[13px] text-[#a6b2ca]">
-          Now Playing
-        </span>
+                <Link
+                    href="/now-playing"
+                    aria-current={pathname === "/now-playing" ? "page" : undefined}
+                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
+                        pathname === "/now-playing"
+                            ? "bg-[#262647] text-white"
+                            : "text-[#a6b2ca] hover:text-white"
+                    }`}
+                >
+                    Now Playing
+                </Link>
+
+
             </nav>
             <section className="border-t border-[#2a3650] pt-5">
                 <h2 className="text-[10px] font-semibold text-[#7786a4]">
