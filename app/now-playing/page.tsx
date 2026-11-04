@@ -40,9 +40,6 @@ export default async function NowPlayingPage({
     const result: AudiusTrackResponse = await response.json();
     const track = result.data;
 
-    const streamUrl =
-        `https://api.audius.co/v1/tracks/${encodeURIComponent(track.id)}/stream`;
-
     return (
         <main className="p-8">
             <h1 className="text-3xl font-bold text-white">
@@ -62,15 +59,6 @@ export default async function NowPlayingPage({
                     by {track.user.name}
                 </p>
 
-                <audio
-                    key={track.id}
-                    controls
-                    preload="metadata"
-                    src={streamUrl}
-                    className="mt-8 w-full max-w-md"
-                >
-                    Your browser does not support audio playback.
-                </audio>
             </div>
         </main>
     );

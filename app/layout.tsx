@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { PlayerProvider } from "./components/PlayerProvider";
-import PlayerStatus from "./components/PlayerStatus";
+import PlayerBar from "./components/PlayerBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +36,7 @@ export default function RootLayout({
         <Sidebar />
 
           {/*  MAIN CONTENT AREA  */}
-          <div className="min-w-0 flex-1 overflow-auto pb-24 md:ml-56">
+          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-56">
               {children}
           </div>
       </div>
@@ -44,31 +44,8 @@ export default function RootLayout({
 
                                      {/*  BOTTOM PLAYER BAR  */}
 
-             <div className="flex items-center justify-between px-6 h-20 w-full bg-gray-950 fixed bottom-0 left-0 right-0 border-t border-gray-800 z-50"> {/*bottom bar making of p music*/}
-
-                 {/* Left: Song Info */}
-              <div className={'flex gap-4 items-center shrink-0 w-72'}>
-                  <div className="w-12 h-12 bg-gray-700 rounded"></div>
-                  <div>
-                      <PlayerStatus />
-                  </div>
-              </div>
-
-                 {/* Center: Play Controls */}
-              <div className={'flex items-center gap-8 mx-auto'}>
-                  <button className={'font-medium text-4xl'}>⏮️</button>
-                  <button className={'font-medium  text-5xl'}>▶️</button>
-                  <button className={'font-medium text-4xl'}>⏭️</button>
-              </div>
-
-                 {/* Right: Volume */}
-              <div className={'flex items-center gap-3 w-72 justify-end'}>
-                  <span>Volume</span>
-                  <div className="w-28 h-1 bg-gray-700 rounded-full">
-                      <div className="w-2/3 h-1 bg-indigo-400 rounded-full"></div>
-                      </div>
-              </div>
-          </div>
+          <PlayerBar />
+                                     {/*  BOTTOM PLAYER BAR Done  */}
 
       </PlayerProvider>
       </body>
