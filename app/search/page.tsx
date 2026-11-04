@@ -48,16 +48,13 @@ export default async function SearchPage({
                     Search music
                 </label>
                 <input
+                    id="music-query"
                     type="search"
                     name="q"
                     defaultValue={q}
                     placeholder="Search for a song or artist"
                     className="min-w-0 flex-1 rounded-lg bg-slate-800 px-4 py-3 text-white"
                 />
-                <label htmlFor="music-query" className="sr-only">
-                    Search music
-                </label>
-
                 <button
                     type="submit"
                     className="rounded-lg shrink-0 bg-indigo-500 px-5 text-white"
