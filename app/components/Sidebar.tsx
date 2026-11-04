@@ -71,6 +71,18 @@ export default function Sidebar() {
                     Now Playing
                 </Link>
 
+                <Link
+                    href="/search"
+                    aria-current={pathname === "/search" ? "page" : undefined}
+                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
+                        pathname === "/search"
+                            ? "bg-[#262647] text-white"
+                            : "text-[#a6b2ca] hover:text-white"
+                    }`}
+                >
+                    Search
+                </Link>
+
 
             </nav>
             <section className="border-t border-[#2a3650] pt-5">

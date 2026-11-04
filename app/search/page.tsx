@@ -1,3 +1,5 @@
+import TrackCard from "../components/TrackCard";
+
 type AudiusTrack = {
     id: string;
     title: string;
@@ -42,17 +44,23 @@ export default async function SearchPage({
             </h1>
 
             <form action="/search" method="get" className="flex gap-3">
+                <label htmlFor="music-query" className="sr-only">
+                    Search music
+                </label>
                 <input
                     type="search"
                     name="q"
                     defaultValue={q}
                     placeholder="Search for a song or artist"
-                    className="rounded-lg bg-slate-800 px-4 py-3 text-white"
+                    className="min-w-0 flex-1 rounded-lg bg-slate-800 px-4 py-3 text-white"
                 />
+                <label htmlFor="music-query" className="sr-only">
+                    Search music
+                </label>
 
                 <button
                     type="submit"
-                    className="rounded-lg bg-indigo-500 px-5 text-white"
+                    className="rounded-lg shrink-0 bg-indigo-500 px-5 text-white"
                 >
                     Search
                 </button>
@@ -63,11 +71,18 @@ export default async function SearchPage({
             <div className="mt-8">
                 <h2 className="text-xl font-bold text-white">Search Results</h2>
                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+
+                    {q.trim() && tracks.length === 0 && (
+                        <p className="col-span-full mt-6 text-gray-400">
+                            No tracks found. Try another song or artist.
+                        </p>
+                    )}
                     {tracks.map((track) => (
-                        <div key={track.id} className="rounded-lg bg-slate-800 p-4">
-                            <h3 className="text-lg font-bold text-white">{track.title}</h3>
-                            <p className="text-gray-300">by {track.user.name}</p>
-                        </div>
+                        <TrackCard
+                            key={track.id}
+                            title={track.title}
+                            artist={track.user.name}
+                        />
                     ))}
                 </div>
             </div>
