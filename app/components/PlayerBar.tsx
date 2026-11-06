@@ -128,6 +128,10 @@ export default function PlayerBar() {
                     onLoadedMetadata={(event) => {
                         setDuration(event.currentTarget.duration);
                         setCurrentTime(0);
+                        event.currentTarget.volume = volume / 100;
+                    }}
+                    onVolumeChange={(event) => {
+                        setVolume(Math.round(event.currentTarget.volume * 100));
                     }}
                     key={currentTrack.id}
                     controls
