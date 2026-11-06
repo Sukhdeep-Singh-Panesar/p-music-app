@@ -40,6 +40,7 @@ export default async function Home() {
         <WelcomeMessage message={message} />
           {tracks.map((track) => (
             <TrackCard
+              id={track.id}
               key={track.id}
               title={track.title}
               artist={track.user.name}
