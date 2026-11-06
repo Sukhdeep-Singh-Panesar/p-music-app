@@ -16,6 +16,8 @@ export type PlayerTrack = {
 type PlayerContextType = {
     currentTrack: PlayerTrack | null;
     selectTrack: (track: PlayerTrack) => void;
+    favorites: PlayerTrack[];
+    toggleFavorite: (track: PlayerTrack) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -27,12 +29,31 @@ export function PlayerProvider({
 }) {
     const [currentTrack, setCurrentTrack] =
         useState<PlayerTrack | null>(null);
+    const [favorites, setFavorites] =
+        useState<PlayerTrack[]>([]);
 
+    function toggleFavorite(track: PlayerTrack) {
+        setFavorites((previous) => {
+            const alreadySaved = previous.some(
+                (saved) => saved.id === track.id
+            );
+
+            if (alreadySaved) {
+                return previous.filter(
+                    (saved) => saved.id !== track.id
+                );
+            }
+
+            return [...previous, track];
+        });
+    }
     return (
         <PlayerContext.Provider
             value={{
                 currentTrack,
                 selectTrack: setCurrentTrack,
+                favorites,
+                toggleFavorite,
             }}
         >
             {children}
