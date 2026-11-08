@@ -8,7 +8,12 @@ export default function NowPlayingDetails({
                                           }: {
     routeTrack?: PlayerTrack;
 }) {
-    const { currentTrack, selectTrack } = usePlayer();
+    const {
+        currentTrack,
+        selectTrack,
+        favorites,
+        toggleFavorite,
+    } = usePlayer();
 
     useEffect(() => {
         if (routeTrack && currentTrack?.id !== routeTrack.id) {
@@ -17,6 +22,10 @@ export default function NowPlayingDetails({
     }, [routeTrack, currentTrack?.id, selectTrack]);
 
     const track = routeTrack ?? currentTrack;
+
+    const isFavorite = track
+        ? favorites.some(fav => fav.id === track.id)
+        : false;
 
     if (!track) {
         return (
@@ -47,6 +56,16 @@ export default function NowPlayingDetails({
                 <p className="mt-2 text-gray-400">
                     by {track.artist}
                 </p>
+
+                <button
+                    type="button"
+                    onClick={() => toggleFavorite(track)}
+                    aria-pressed={isFavorite}
+                    className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-white"
+                >
+                    {isFavorite ? "♥ Saved" : "♡ Save to Favorites"}
+                </button>
+
             </div>
         </main>
     );
