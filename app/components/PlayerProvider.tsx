@@ -4,8 +4,22 @@ import {
     createContext,
     useContext,
     useState,
+    useEffect,
+    useSyncExternalStore,
     type ReactNode,
 } from "react";
+
+function subscribe() {
+    return () => {};
+}
+
+function getClientSnapshot() {
+    return true;
+}
+
+function getServerSnapshot() {
+    return false;
+}
 
 export type PlayerTrack = {
     id: string;
@@ -29,8 +43,39 @@ export function PlayerProvider({
 }) {
     const [currentTrack, setCurrentTrack] =
         useState<PlayerTrack | null>(null);
-    const [favorites, setFavorites] =
-        useState<PlayerTrack[]>([]);
+
+    const [favorites, setFavorites] = useState<PlayerTrack[]>(() => {
+        if (typeof window === "undefined") return [];
+
+        try {
+            const saved = localStorage.getItem("p-music-favorites");
+            const parsed: unknown = saved ? JSON.parse(saved) : [];
+
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            console.error("Failed to load favorites:", error);
+            return [];
+        }
+    });
+
+    const hasHydrated = useSyncExternalStore(
+        subscribe,
+        getClientSnapshot,
+        getServerSnapshot
+    );
+
+    useEffect(() => {
+        if (!hasHydrated) return;
+
+        try {
+            localStorage.setItem(
+                "p-music-favorites",
+                JSON.stringify(favorites)
+            );
+        } catch (error) {
+            console.error("Failed to save favorites:", error);
+        }
+    }, [favorites, hasHydrated]);
 
     function toggleFavorite(track: PlayerTrack) {
         setFavorites((previous) => {
@@ -52,7 +97,7 @@ export function PlayerProvider({
             value={{
                 currentTrack,
                 selectTrack: setCurrentTrack,
-                favorites,
+                favorites: hasHydrated ? favorites : [],
                 toggleFavorite,
             }}
         >
