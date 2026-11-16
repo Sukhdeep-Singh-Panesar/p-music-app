@@ -2,8 +2,15 @@
 
 import { usePlayer } from "../components/PlayerProvider";
 import TrackCard from "../components/TrackCard";
+import { useState } from "react";
 export default function LibraryPage() {
-    const { favorites } = usePlayer();
+    const { favorites, playlists, createPlaylist } = usePlayer();
+    const [playlistName, setPlaylistName] = useState("");
+
+    function handleCreatePlaylist() {
+        createPlaylist(playlistName);
+        setPlaylistName("");
+    }
     return (
         <main className="p-8">
             <h1 className="text-3xl font-bold text-white">
@@ -12,6 +19,49 @@ export default function LibraryPage() {
             <p className="mt-3 text-gray-400">
                 {favorites.length} saved songs
             </p>
+
+            <form
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    handleCreatePlaylist();
+                }}
+                className="mt-6 flex gap-3"
+            >
+                <input
+                    type="text"
+                    value={playlistName}
+                    onChange={(event) => setPlaylistName(event.target.value)}
+                    placeholder="Enter playlist name"
+                    className="rounded-lg bg-gray-800 px-4 py-2 text-white"
+                />
+
+                <button
+                    type="submit"
+                    className="rounded-lg bg-indigo-600 px-4 py-2 text-white"
+                >
+                    Create Playlist
+                </button>
+            </form>
+
+            <section className="mt-8">
+                <h2 className="text-xl font-semibold text-white">
+                    Your Playlists
+                </h2>
+
+                <div className="mt-4 space-y-3">
+                    {playlists.map((playlist) => (
+                        <div
+                            key={playlist.id}
+                            className="rounded-lg bg-gray-800 p-4 text-white"
+                        >
+                            <h3 className="font-medium">{playlist.name}</h3>
+                            <p className="text-sm text-gray-400">
+                                {playlist.tracks.length} songs
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </section>
 
             {favorites.length === 0 && (
                 <p className="mt-6 text-gray-400">

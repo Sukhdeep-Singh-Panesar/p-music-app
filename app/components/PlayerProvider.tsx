@@ -8,7 +8,7 @@ import {
     useSyncExternalStore,
     type ReactNode,
 } from "react";
-
+import type { Playlist } from "../types/playlist";
 function subscribe() {
     return () => {};
 }
@@ -32,6 +32,8 @@ type PlayerContextType = {
     selectTrack: (track: PlayerTrack) => void;
     favorites: PlayerTrack[];
     toggleFavorite: (track: PlayerTrack) => void;
+    playlists: Playlist[];
+    createPlaylist: (name: string) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -43,6 +45,8 @@ export function PlayerProvider({
 }) {
     const [currentTrack, setCurrentTrack] =
         useState<PlayerTrack | null>(null);
+
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
     const [favorites, setFavorites] = useState<PlayerTrack[]>(() => {
         if (typeof window === "undefined") return [];
@@ -92,6 +96,17 @@ export function PlayerProvider({
             return [...previous, track];
         });
     }
+
+    function createPlaylist(name: string) {
+        const trimmedName = name.trim();
+        if (!trimmedName) return;
+        const newPlaylist: Playlist = {
+            id: crypto.randomUUID(),
+            name: trimmedName,
+            tracks: [],
+        };
+        setPlaylists((previous) => [...previous, newPlaylist]);
+    }
     return (
         <PlayerContext.Provider
             value={{
@@ -99,6 +114,8 @@ export function PlayerProvider({
                 selectTrack: setCurrentTrack,
                 favorites: hasHydrated ? favorites : [],
                 toggleFavorite,
+                playlists,
+                createPlaylist,
             }}
         >
             {children}
