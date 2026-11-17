@@ -36,6 +36,10 @@ type PlayerContextType = {
     createPlaylist: (name: string) => void;
     deletePlaylist: (playlistId: string) => void;
     addTrackToPlaylist: (playlistId: string, track: PlayerTrack) => void;
+    removeTrackFromPlaylist: (
+        playlistId: string,
+        trackId: string
+    ) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -138,6 +142,25 @@ export function PlayerProvider({
         });
     }
 
+    function removeTrackFromPlaylist(
+        playlistId: string,
+        trackId: string
+    ) {
+        setPlaylists((previous) => {
+            return previous.map((playlist) => {
+                if (playlist.id === playlistId) {
+                    return {
+                        ...playlist,
+                        tracks: playlist.tracks.filter(
+                            (t) => t.id !== trackId
+                        ),
+                    };
+                }
+                return playlist;
+            });
+        });
+    }
+
     return (
         <PlayerContext.Provider
             value={{
@@ -149,6 +172,7 @@ export function PlayerProvider({
                 createPlaylist,
                 deletePlaylist,
                 addTrackToPlaylist,
+                removeTrackFromPlaylist,
             }}
         >
             {children}

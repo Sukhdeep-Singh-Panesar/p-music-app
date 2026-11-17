@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { usePlayer } from "../components/PlayerProvider";
 import TrackCard from "../components/TrackCard";
 import { useState } from "react";
@@ -54,7 +54,12 @@ export default function LibraryPage() {
                             key={playlist.id}
                             className="rounded-lg bg-gray-800 p-4 text-white"
                         >
-                            <h3 className="font-medium">{playlist.name}</h3>
+                            <Link
+                                href={`/playlist/${playlist.id}`}
+                                className="font-medium hover:underline"
+                            >
+                                {playlist.name}
+                            </Link>
                             <p className="text-sm text-gray-400">
                                 {playlist.tracks.length} songs
                             </p>
