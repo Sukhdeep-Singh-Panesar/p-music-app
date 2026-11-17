@@ -35,6 +35,7 @@ type PlayerContextType = {
     playlists: Playlist[];
     createPlaylist: (name: string) => void;
     deletePlaylist: (playlistId: string) => void;
+    addTrackToPlaylist: (playlistId: string, track: PlayerTrack) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -115,6 +116,28 @@ export function PlayerProvider({
         );
     }
 
+    function addTrackToPlaylist(
+        playlistId: string,
+        track: PlayerTrack
+    ) {
+        setPlaylists((previous) => {
+            return previous.map((playlist) => {
+                if (playlist.id === playlistId) {
+                    const alreadyAdded = playlist.tracks.some(
+                        (t) => t.id === track.id
+                    );
+                    if (alreadyAdded) return playlist;
+
+                    return {
+                        ...playlist,
+                        tracks: [...playlist.tracks, track],
+                    };
+                }
+                return playlist;
+            });
+        });
+    }
+
     return (
         <PlayerContext.Provider
             value={{
@@ -125,6 +148,7 @@ export function PlayerProvider({
                 playlists,
                 createPlaylist,
                 deletePlaylist,
+                addTrackToPlaylist,
             }}
         >
             {children}
