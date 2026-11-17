@@ -34,6 +34,7 @@ type PlayerContextType = {
     toggleFavorite: (track: PlayerTrack) => void;
     playlists: Playlist[];
     createPlaylist: (name: string) => void;
+    deletePlaylist: (playlistId: string) => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -107,6 +108,13 @@ export function PlayerProvider({
         };
         setPlaylists((previous) => [...previous, newPlaylist]);
     }
+
+    function deletePlaylist(playlistId: string) {
+        setPlaylists((previous) =>
+            previous.filter((playlist) => playlist.id !== playlistId)
+        );
+    }
+
     return (
         <PlayerContext.Provider
             value={{
@@ -116,6 +124,7 @@ export function PlayerProvider({
                 toggleFavorite,
                 playlists,
                 createPlaylist,
+                deletePlaylist,
             }}
         >
             {children}

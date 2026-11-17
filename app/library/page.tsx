@@ -4,7 +4,7 @@ import { usePlayer } from "../components/PlayerProvider";
 import TrackCard from "../components/TrackCard";
 import { useState } from "react";
 export default function LibraryPage() {
-    const { favorites, playlists, createPlaylist } = usePlayer();
+    const { favorites, playlists, createPlaylist, deletePlaylist } = usePlayer();
     const [playlistName, setPlaylistName] = useState("");
 
     function handleCreatePlaylist() {
@@ -58,6 +58,13 @@ export default function LibraryPage() {
                             <p className="text-sm text-gray-400">
                                 {playlist.tracks.length} songs
                             </p>
+                            <button
+                                type="button"
+                                onClick={() => deletePlaylist(playlist.id)}
+                                className="mt-3 text-sm text-red-400 hover:text-red-300"
+                            >
+                                Delete Playlist
+                            </button>
                         </div>
                     ))}
                 </div>
