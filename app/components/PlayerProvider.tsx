@@ -8,7 +8,7 @@ import {
     useSyncExternalStore,
     type ReactNode,
 } from "react";
-
+import type { Playlist } from "../types/playlist";
 function subscribe() {
     return () => {};
 }
@@ -32,6 +32,16 @@ type PlayerContextType = {
     selectTrack: (track: PlayerTrack) => void;
     favorites: PlayerTrack[];
     toggleFavorite: (track: PlayerTrack) => void;
+    playlists: Playlist[];
+    createPlaylist: (name: string) => void;
+    deletePlaylist: (playlistId: string) => void;
+    addTrackToPlaylist: (playlistId: string, track: PlayerTrack) => void;
+    removeTrackFromPlaylist: (
+        playlistId: string,
+        trackId: string
+    ) => void;
+    renamePlaylist: (playlistId: string, name: string) => void;
+    playlistsLoaded: boolean;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -43,6 +53,20 @@ export function PlayerProvider({
 }) {
     const [currentTrack, setCurrentTrack] =
         useState<PlayerTrack | null>(null);
+
+    const [playlists, setPlaylists] = useState<Playlist[]>(() => {
+        if (typeof window === "undefined") return [];
+
+        try {
+            const saved = localStorage.getItem("p-music-playlists");
+            const parsed: unknown = saved ? JSON.parse(saved) : [];
+
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            console.error("Failed to load playlists:", error);
+            return [];
+        }
+    });
 
     const [favorites, setFavorites] = useState<PlayerTrack[]>(() => {
         if (typeof window === "undefined") return [];
@@ -57,6 +81,7 @@ export function PlayerProvider({
             return [];
         }
     });
+
 
     const hasHydrated = useSyncExternalStore(
         subscribe,
@@ -77,6 +102,19 @@ export function PlayerProvider({
         }
     }, [favorites, hasHydrated]);
 
+    useEffect(() => {
+        if (!hasHydrated) return;
+
+        try {
+            localStorage.setItem(
+                "p-music-playlists",
+                JSON.stringify(playlists)
+            );
+        } catch (error) {
+            console.error("Failed to save playlists:", error);
+        }
+    }, [playlists, hasHydrated]);
+
     function toggleFavorite(track: PlayerTrack) {
         setFavorites((previous) => {
             const alreadySaved = previous.some(
@@ -92,6 +130,82 @@ export function PlayerProvider({
             return [...previous, track];
         });
     }
+
+    function createPlaylist(name: string) {
+        const trimmedName = name.trim();
+        if (!trimmedName) return;
+        const newPlaylist: Playlist = {
+            id: crypto.randomUUID(),
+            name: trimmedName,
+            tracks: [],
+        };
+        setPlaylists((previous) => [...previous, newPlaylist]);
+    }
+
+    function deletePlaylist(playlistId: string) {
+        setPlaylists((previous) =>
+            previous.filter((playlist) => playlist.id !== playlistId)
+        );
+    }
+
+    function addTrackToPlaylist(
+        playlistId: string,
+        track: PlayerTrack
+    ) {
+        setPlaylists((previous) => {
+            return previous.map((playlist) => {
+                if (playlist.id === playlistId) {
+                    const alreadyAdded = playlist.tracks.some(
+                        (t) => t.id === track.id
+                    );
+                    if (alreadyAdded) return playlist;
+
+                    return {
+                        ...playlist,
+                        tracks: [...playlist.tracks, track],
+                    };
+                }
+                return playlist;
+            });
+        });
+    }
+
+    function removeTrackFromPlaylist(
+        playlistId: string,
+        trackId: string
+    ) {
+        setPlaylists((previous) => {
+            return previous.map((playlist) => {
+                if (playlist.id === playlistId) {
+                    return {
+                        ...playlist,
+                        tracks: playlist.tracks.filter(
+                            (t) => t.id !== trackId
+                        ),
+                    };
+                }
+                return playlist;
+            });
+        });
+    }
+
+    function renamePlaylist(playlistId: string, name: string) {
+        const trimmedName = name.trim();
+
+        if (!trimmedName) return;
+
+        setPlaylists((previous) => {
+            return previous.map((playlist) => {
+                if (playlist.id === playlistId) {
+                    return {
+                        ...playlist,
+                        name: trimmedName,
+                    };
+                }
+                return playlist;
+            });
+        });
+    }
     return (
         <PlayerContext.Provider
             value={{
@@ -99,6 +213,13 @@ export function PlayerProvider({
                 selectTrack: setCurrentTrack,
                 favorites: hasHydrated ? favorites : [],
                 toggleFavorite,
+                playlists: hasHydrated ? playlists : [],
+                createPlaylist,
+                deletePlaylist,
+                addTrackToPlaylist,
+                removeTrackFromPlaylist,
+                renamePlaylist,
+                playlistsLoaded: hasHydrated,
             }}
         >
             {children}

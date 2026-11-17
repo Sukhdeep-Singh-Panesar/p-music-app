@@ -16,7 +16,7 @@ type AudiusResponse = {
 
 async function getTrendingTracks(): Promise<AudiusTrack[]> {
     const response = await fetch(
-        "https://api.audius.co/v1/tracks/trending?limit=3",
+        "https://api.audius.co/v1/tracks/trending?limit=1",
         { next: { revalidate: 3600 } }
     );
 

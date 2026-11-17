@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePlayer, type PlayerTrack } from "./PlayerProvider";
 
 export default function NowPlayingDetails({
@@ -13,7 +13,11 @@ export default function NowPlayingDetails({
         selectTrack,
         favorites,
         toggleFavorite,
+        playlists,
+        addTrackToPlaylist,
     } = usePlayer();
+
+    const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
 
     useEffect(() => {
         if (routeTrack && currentTrack?.id !== routeTrack.id) {
@@ -66,6 +70,34 @@ export default function NowPlayingDetails({
                     {isFavorite ? "♥ Saved" : "♡ Save to Favorites"}
                 </button>
 
+                {playlists.length === 0 && (
+                    <p className="mt-4 text-sm text-gray-400">
+                        Create a playlist in Your Library first.
+                    </p>
+                )}
+
+                <select
+                    disabled={playlists.length === 0}
+                    value={selectedPlaylistId}
+                    onChange={(event) => setSelectedPlaylistId(event.target.value)}
+                    className="mt-4 rounded-lg bg-gray-800 px-4 py-2 text-white"
+                >
+                    <option value="">Select a playlist</option>
+
+                    {playlists.map((playlist) => (
+                        <option key={playlist.id} value={playlist.id}>
+                            {playlist.name}
+                        </option>
+                    ))}
+                </select>
+                <button
+                    type="button"
+                    onClick={() => addTrackToPlaylist(selectedPlaylistId, track)}
+                    disabled={!selectedPlaylistId}
+                    className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-white disabled:opacity-50"
+                >
+                    Add to Playlist
+                </button>
             </div>
         </main>
     );
