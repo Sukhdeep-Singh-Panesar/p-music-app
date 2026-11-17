@@ -47,7 +47,11 @@ export default function LibraryPage() {
                 <h2 className="text-xl font-semibold text-white">
                     Your Playlists
                 </h2>
-
+                {playlists.length === 0 && (
+                    <p className="mt-4 text-gray-400">
+                        Create your first playlist to organize your favorite music.
+                    </p>
+                )}
                 <div className="mt-4 space-y-3">
                     {playlists.map((playlist) => (
                         <div

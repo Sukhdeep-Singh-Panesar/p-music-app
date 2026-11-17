@@ -70,7 +70,14 @@ export default function NowPlayingDetails({
                     {isFavorite ? "♥ Saved" : "♡ Save to Favorites"}
                 </button>
 
+                {playlists.length === 0 && (
+                    <p className="mt-4 text-sm text-gray-400">
+                        Create a playlist in Your Library first.
+                    </p>
+                )}
+
                 <select
+                    disabled={playlists.length === 0}
                     value={selectedPlaylistId}
                     onChange={(event) => setSelectedPlaylistId(event.target.value)}
                     className="mt-4 rounded-lg bg-gray-800 px-4 py-2 text-white"
