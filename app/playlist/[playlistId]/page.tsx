@@ -6,13 +6,20 @@ import TrackCard from "../../components/TrackCard";
 
 export default function PlaylistPage() {
     const { playlistId } = useParams<{ playlistId: string }>();
-    const { playlists, removeTrackFromPlaylist, renamePlaylist } = usePlayer();
+    const { playlists, removeTrackFromPlaylist, renamePlaylist, playlistsLoaded } = usePlayer();
 
     const playlist = playlists.find(
         (p) => p.id === playlistId
     );
 
     const [newName, setNewName] = useState("");
+    if (!playlistsLoaded) {
+        return (
+            <main className="p-8 text-gray-400">
+                Loading playlist...
+            </main>
+        );
+    }
     if (!playlist) {
         return (
             <main className="p-8 text-white">

@@ -41,6 +41,7 @@ type PlayerContextType = {
         trackId: string
     ) => void;
     renamePlaylist: (playlistId: string, name: string) => void;
+    playlistsLoaded: boolean;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -53,7 +54,19 @@ export function PlayerProvider({
     const [currentTrack, setCurrentTrack] =
         useState<PlayerTrack | null>(null);
 
-    const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [playlists, setPlaylists] = useState<Playlist[]>(() => {
+        if (typeof window === "undefined") return [];
+
+        try {
+            const saved = localStorage.getItem("p-music-playlists");
+            const parsed: unknown = saved ? JSON.parse(saved) : [];
+
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+            console.error("Failed to load playlists:", error);
+            return [];
+        }
+    });
 
     const [favorites, setFavorites] = useState<PlayerTrack[]>(() => {
         if (typeof window === "undefined") return [];
@@ -68,6 +81,7 @@ export function PlayerProvider({
             return [];
         }
     });
+
 
     const hasHydrated = useSyncExternalStore(
         subscribe,
@@ -87,6 +101,19 @@ export function PlayerProvider({
             console.error("Failed to save favorites:", error);
         }
     }, [favorites, hasHydrated]);
+
+    useEffect(() => {
+        if (!hasHydrated) return;
+
+        try {
+            localStorage.setItem(
+                "p-music-playlists",
+                JSON.stringify(playlists)
+            );
+        } catch (error) {
+            console.error("Failed to save playlists:", error);
+        }
+    }, [playlists, hasHydrated]);
 
     function toggleFavorite(track: PlayerTrack) {
         setFavorites((previous) => {
@@ -186,12 +213,13 @@ export function PlayerProvider({
                 selectTrack: setCurrentTrack,
                 favorites: hasHydrated ? favorites : [],
                 toggleFavorite,
-                playlists,
+                playlists: hasHydrated ? playlists : [],
                 createPlaylist,
                 deletePlaylist,
                 addTrackToPlaylist,
                 removeTrackFromPlaylist,
                 renamePlaylist,
+                playlistsLoaded: hasHydrated,
             }}
         >
             {children}
