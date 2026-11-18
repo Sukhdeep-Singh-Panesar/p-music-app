@@ -2,10 +2,12 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { usePlayer } from "./PlayerProvider";
+import { useAuth } from "@clerk/nextjs";
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const { playlists } = usePlayer();
+    const { playlists, playlistsLoaded } = usePlayer();
+    const { isLoaded, isSignedIn } = useAuth();
     return (
         <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 border-r border-[#2a3650] bg-[#0b1120] px-4.5 pt-8 text-[#f7f8ff] md:flex md:flex-col md:gap-7">
 
@@ -69,7 +71,8 @@ export default function Sidebar() {
 
 
             </nav>
-            <section className="border-t border-[#2a3650] pt-5">
+            {playlistsLoaded && isLoaded && isSignedIn && (
+                <section className="border-t border-[#2a3650] pt-5">
                 <h2 className="text-[10px] font-semibold text-[#7786a4]">
                     YOUR PLAYLISTS
                 </h2>
@@ -101,7 +104,7 @@ export default function Sidebar() {
                 </ul>
 
             </section>
-
+            )}
         </aside>
     );
 }

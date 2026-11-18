@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePlayer, type PlayerTrack } from "./PlayerProvider";
-
+import { Show, SignInButton } from "@clerk/nextjs";
 export default function NowPlayingDetails({
                                               routeTrack,
                                           }: {
@@ -61,6 +61,7 @@ export default function NowPlayingDetails({
                     by {track.artist}
                 </p>
 
+                <Show when="signed-in">
                 <button
                     type="button"
                     onClick={() => toggleFavorite(track)}
@@ -98,6 +99,19 @@ export default function NowPlayingDetails({
                 >
                     Add to Playlist
                 </button>
+                </Show>
+
+                <Show when="signed-out">
+                    <SignInButton>
+                        <button
+                            type="button"
+                            className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-white"
+                        >
+                            Sign in to save your music
+                        </button>
+                    </SignInButton>
+                </Show>
+
             </div>
         </main>
     );
