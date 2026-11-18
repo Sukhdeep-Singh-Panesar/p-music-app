@@ -14,7 +14,9 @@ export default function WelcomeMessage({
         <div>
             {isLoaded && isSignedIn && user ? (
                 <p className="text-xl text-gray-300 mb-8">
-                    Welcome back, {user.firstName}!
+                    {user.firstName
+                        ? `Welcome back, ${user.firstName}!`
+                        : "Welcome back!"}
                 </p>
             ) : (
                 <p className="text-xl text-gray-300 mb-8">
