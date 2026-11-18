@@ -42,3 +42,15 @@ next-env.d.ts
 
 .idea
 .vscode
+
+# Environment variables
+.env*
+
+# Generated Prisma Client
+/generated/prisma/
+
+# AI agent tooling
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
