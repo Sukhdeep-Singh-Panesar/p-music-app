@@ -1,8 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
 import LibraryContent from "./LibraryContent";
+import { getOrCreateUser } from "@/lib/user";
 
 export default async function LibraryPage() {
-    await auth.protect();
+
+    await getOrCreateUser();
 
     return <LibraryContent />;
 }
