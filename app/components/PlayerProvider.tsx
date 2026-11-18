@@ -11,23 +11,21 @@ import {
     useState,
     useEffect,
     useRef,
-    useSyncExternalStore,
     type ReactNode,
 } from "react";
+
+import {
+    getPlaylistsAction,
+    createPlaylistAction,
+    deletePlaylistAction,
+    renamePlaylistAction,
+    addTrackToPlaylistAction,
+    removeTrackFromPlaylistAction,
+} from "@/app/actions/playlists";
+
 import type { Playlist } from "../types/playlist";
 
 import { useAuth } from "@clerk/nextjs";
-function subscribe() {
-    return () => {};
-}
-
-function getClientSnapshot() {
-    return true;
-}
-
-function getServerSnapshot() {
-    return false;
-}
 
 export type PlayerTrack = {
     id: string;
@@ -41,14 +39,11 @@ type PlayerContextType = {
     favorites: PlayerTrack[];
     toggleFavorite: (track: PlayerTrack) => Promise<void>;
     playlists: Playlist[];
-    createPlaylist: (name: string) => void;
-    deletePlaylist: (playlistId: string) => void;
-    addTrackToPlaylist: (playlistId: string, track: PlayerTrack) => void;
-    removeTrackFromPlaylist: (
-        playlistId: string,
-        trackId: string
-    ) => void;
-    renamePlaylist: (playlistId: string, name: string) => void;
+    createPlaylist: (name: string) => Promise<void>;
+    deletePlaylist: (playlistId: string) => Promise<void>;
+    addTrackToPlaylist: (playlistId: string, track: PlayerTrack) => Promise<void>;
+    removeTrackFromPlaylist: (playlistId: string, trackId: string) => Promise<void>;
+    renamePlaylist: (playlistId: string, name: string) => Promise<void>;
     playlistsLoaded: boolean;
 };
 
@@ -61,22 +56,28 @@ export function PlayerProvider({
 }) {
     const { isLoaded, isSignedIn, userId, sessionId } = useAuth();
     const pendingFavorites = useRef<Set<string>>(new Set());
+    const pendingPlaylists = useRef<Set<string>>(new Set());
     const [currentTrack, setCurrentTrack] =
         useState<PlayerTrack | null>(null);
 
-    const [playlists, setPlaylists] = useState<Playlist[]>(() => {
-        if (typeof window === "undefined") return [];
+    const [playlistState, setPlaylistState] = useState<{
+        owner: string;
+        playlists: Playlist[];
+        session: string;
+    } | null>(null);
 
-        try {
-            const saved = localStorage.getItem("p-music-playlists");
-            const parsed: unknown = saved ? JSON.parse(saved) : [];
+    const playlistsLoaded = Boolean(
+        isLoaded &&
+        isSignedIn &&
+        userId &&
+        sessionId &&
+        playlistState?.owner === userId &&
+        playlistState?.session === sessionId
+    );
 
-            return Array.isArray(parsed) ? parsed : [];
-        } catch (error) {
-            console.error("Failed to load playlists:", error);
-            return [];
-        }
-    });
+    const playlists = playlistsLoaded
+        ? playlistState?.playlists ?? []
+        : [];
 
     const [favoriteState, setFavoriteState] = useState<{
         owner: string;
@@ -86,12 +87,6 @@ export function PlayerProvider({
 
     const favorites = favoriteState?.tracks ?? [];
     const favoritesOwner = favoriteState?.owner ?? null;
-
-    const hasHydrated = useSyncExternalStore(
-        subscribe,
-        getClientSnapshot,
-        getServerSnapshot
-    );
 
     useEffect(() => {
         if (!isLoaded || !isSignedIn || !userId || !sessionId) return;
@@ -129,17 +124,44 @@ export function PlayerProvider({
 
 
     useEffect(() => {
-        if (!hasHydrated) return;
+        if (!isLoaded || !isSignedIn || !userId || !sessionId) return;
 
-        try {
-            localStorage.setItem(
-                "p-music-playlists",
-                JSON.stringify(playlists)
-            );
-        } catch (error) {
-            console.error("Failed to save playlists:", error);
+        const owner = userId;
+        const session = sessionId;
+
+        let ignore = false;
+
+        async function loadPlaylists() {
+            try {
+                const data = await getPlaylistsAction();
+
+                if (!ignore) {
+                    setPlaylistState({
+                        owner: owner,
+                        playlists: data.map((playlist) => ({
+                            id: playlist.id,
+                            name: playlist.name,
+                            tracks: playlist.playlistTracks.map((track) => ({
+                                id: track.trackId,
+                                title: track.title,
+                                artist: track.artist,
+                            })),
+                        })),
+                        session: session,
+                    });
+                }
+            } catch (error) {
+                console.error("Failed to load playlists:", error);
+            }
         }
-    }, [playlists, hasHydrated]);
+
+        void loadPlaylists();
+
+        return () => {
+            ignore = true;
+        };
+    }, [isLoaded, isSignedIn, userId, sessionId]);
+
 
     async function toggleFavorite(track: PlayerTrack) {
         if (!isLoaded || !isSignedIn || !userId || !sessionId ||
@@ -187,80 +209,190 @@ export function PlayerProvider({
             }
     }
 
-    function createPlaylist(name: string) {
+    function updatePlaylists(
+        updater: (previous: Playlist[]) => Playlist[]
+    ) {
+        setPlaylistState((previous) => {
+            if (!previous ||
+                previous.owner !== userId ||
+                previous.session !== sessionId) {
+                return previous;
+            }
+
+            return {
+                ...previous,
+                playlists: updater(previous.playlists),
+            };
+        });
+    }
+
+    async function createPlaylist(name: string) {
         const trimmedName = name.trim();
-        if (!trimmedName) return;
-        const newPlaylist: Playlist = {
-            id: crypto.randomUUID(),
-            name: trimmedName,
-            tracks: [],
-        };
-        setPlaylists((previous) => [...previous, newPlaylist]);
+
+        if (!trimmedName || !playlistsLoaded) return;
+        const requestKey = `${sessionId}:create`;
+
+        if (pendingPlaylists.current.has(requestKey)) {
+            return;
+        }
+
+        pendingPlaylists.current.add(requestKey);
+        try {
+            const created = await createPlaylistAction(trimmedName);
+
+            setPlaylistState((previous) => {
+                if (!previous ||
+                    previous.owner !== userId ||
+                    previous.session !== sessionId) {
+                    return previous;
+                }
+
+                return {
+                    ...previous,
+                    playlists: [
+                        ...previous.playlists,
+                        {
+                            id: created.id,
+                            name: created.name,
+                            tracks: [],
+                        },
+                    ],
+                };
+            });
+        } catch (error) {
+            console.error("Failed to create playlist:", error);
+        }
+        finally {
+            pendingPlaylists.current.delete(requestKey);
+        }
     }
 
-    function deletePlaylist(playlistId: string) {
-        setPlaylists((previous) =>
-            previous.filter((playlist) => playlist.id !== playlistId)
-        );
+    async function deletePlaylist(playlistId: string) {
+        if (!playlistsLoaded) return;
+        const requestKey = `${sessionId}:${playlistId}`;
+
+        if (pendingPlaylists.current.has(requestKey)) {
+            return;
+        }
+
+        pendingPlaylists.current.add(requestKey);
+        try {
+            await deletePlaylistAction(playlistId);
+
+            updatePlaylists((previous) =>
+                previous.filter((playlist) => playlist.id !== playlistId)
+            );
+        } catch (error) {
+            console.error("Failed to delete playlist:", error);
+        }
+        finally {
+            pendingPlaylists.current.delete(requestKey);
+        }
     }
 
-    function addTrackToPlaylist(
+    async function addTrackToPlaylist(
         playlistId: string,
         track: PlayerTrack
     ) {
-        setPlaylists((previous) => {
-            return previous.map((playlist) => {
-                if (playlist.id === playlistId) {
-                    const alreadyAdded = playlist.tracks.some(
-                        (t) => t.id === track.id
-                    );
-                    if (alreadyAdded) return playlist;
+        if (!playlistsLoaded) return;
+        const requestKey = `${sessionId}:${playlistId}`;
+
+        if (pendingPlaylists.current.has(requestKey)) {
+            return;
+        }
+
+        pendingPlaylists.current.add(requestKey);
+        try {
+            await addTrackToPlaylistAction(
+                playlistId,
+                track.id,
+                track.title,
+                track.artist
+            );
+
+            updatePlaylists((previous) =>
+                previous.map((playlist) => {
+                    if (playlist.id !== playlistId) return playlist;
 
                     return {
                         ...playlist,
-                        tracks: [...playlist.tracks, track],
+                        tracks: [
+                            ...playlist.tracks.filter((t) => t.id !== track.id),
+                            track,
+                        ],
                     };
-                }
-                return playlist;
-            });
-        });
+                })
+            );
+        } catch (error) {
+            console.error("Failed to add track to playlist:", error);
+        }
+        finally {
+            pendingPlaylists.current.delete(requestKey);
+        }
     }
 
-    function removeTrackFromPlaylist(
+    async function removeTrackFromPlaylist(
         playlistId: string,
         trackId: string
     ) {
-        setPlaylists((previous) => {
-            return previous.map((playlist) => {
-                if (playlist.id === playlistId) {
+        if (!playlistsLoaded) return;
+        const requestKey = `${sessionId}:${playlistId}`;
+
+        if (pendingPlaylists.current.has(requestKey)) {
+            return;
+        }
+
+        pendingPlaylists.current.add(requestKey);
+        try {
+            await removeTrackFromPlaylistAction(playlistId, trackId);
+
+            updatePlaylists((previous) =>
+                previous.map((playlist) => {
+                    if (playlist.id !== playlistId) return playlist;
+
                     return {
                         ...playlist,
                         tracks: playlist.tracks.filter(
-                            (t) => t.id !== trackId
+                            (track) => track.id !== trackId
                         ),
                     };
-                }
-                return playlist;
-            });
-        });
+                })
+            );
+        } catch (error) {
+            console.error("Failed to remove track from playlist:", error);
+        }
+        finally {
+            pendingPlaylists.current.delete(requestKey);
+        }
     }
 
-    function renamePlaylist(playlistId: string, name: string) {
+    async function renamePlaylist(playlistId: string, name: string) {
         const trimmedName = name.trim();
 
-        if (!trimmedName) return;
+        if (!trimmedName || !playlistsLoaded) return;
+        const requestKey = `${sessionId}:${playlistId}`;
 
-        setPlaylists((previous) => {
-            return previous.map((playlist) => {
-                if (playlist.id === playlistId) {
-                    return {
-                        ...playlist,
-                        name: trimmedName,
-                    };
-                }
-                return playlist;
-            });
-        });
+        if (pendingPlaylists.current.has(requestKey)) {
+            return;
+        }
+
+        pendingPlaylists.current.add(requestKey);
+        try {
+            await renamePlaylistAction(playlistId, trimmedName);
+
+            updatePlaylists((previous) =>
+                previous.map((playlist) =>
+                    playlist.id === playlistId
+                        ? { ...playlist, name: trimmedName }
+                        : playlist
+                )
+            );
+        } catch (error) {
+            console.error("Failed to rename playlist:", error);
+        }
+        finally {
+            pendingPlaylists.current.delete(requestKey);
+        }
     }
     return (
         <PlayerContext.Provider
@@ -273,13 +405,13 @@ export function PlayerProvider({
                     ? favorites
                     : [],
                 toggleFavorite,
-                playlists: hasHydrated ? playlists : [],
+                playlists,
                 createPlaylist,
                 deletePlaylist,
                 addTrackToPlaylist,
                 removeTrackFromPlaylist,
                 renamePlaylist,
-                playlistsLoaded: hasHydrated,
+                playlistsLoaded,
             }}
         >
             {children}
