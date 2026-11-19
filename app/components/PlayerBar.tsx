@@ -13,6 +13,8 @@ export default function PlayerBar() {
         playPrevious,
         repeatMode,
         cycleRepeatMode,
+        shuffleEnabled,
+        toggleShuffle,
     } = usePlayer();
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -123,6 +125,14 @@ export default function PlayerBar() {
                         onClick={cycleRepeatMode}
                     >
                         Repeat: {repeatMode}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={toggleShuffle}
+                        aria-pressed={shuffleEnabled}
+                    >
+                        Shuffle: {shuffleEnabled ? "On" : "Off"}
                     </button>
 
                     <p className="text-sm text-gray-400">

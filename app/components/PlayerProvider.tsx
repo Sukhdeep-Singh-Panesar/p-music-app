@@ -54,9 +54,24 @@ type PlayerContextType = {
     playlistsLoaded: boolean;
     repeatMode: RepeatMode;
     cycleRepeatMode: () => void;
+    shuffleEnabled: boolean;
+    toggleShuffle: () => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
+
+function shuffleTracks(tracks: PlayerTrack[]): PlayerTrack[] {
+    const shuffled = [...tracks];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[j]] =
+            [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
 
 export function PlayerProvider({
                                    children,
@@ -68,10 +83,14 @@ export function PlayerProvider({
     const pendingPlaylists = useRef<Set<string>>(new Set());
     const [playback, setPlayback] = useState<{
         queue: PlayerTrack[];
+        originalQueue: PlayerTrack[];
         index: number;
+        shuffleEnabled: boolean;
     }>({
         queue: [],
+        originalQueue: [],
         index: 0,
+        shuffleEnabled: false,
     });
 
     const queue = playback.queue;
@@ -417,19 +436,37 @@ export function PlayerProvider({
 
     const selectTrack = useCallback(
         (track: PlayerTrack, tracks?: PlayerTrack[]) => {
+            const originalQueue = tracks?.some(
+                (song) => song.id === track.id
+            ) ? tracks : [track];
+
+            const shuffledQueue = [
+                track,
+                ...shuffleTracks(
+                    originalQueue.filter(
+                        (song) => song.id !== track.id
+                    )
+                ),
+            ];
+
             setPlayback((previous) => {
-                if (!tracks && previous.queue[previous.index]?.id === track.id) {
+                if (!tracks &&
+                    previous.queue[previous.index]?.id === track.id) {
                     return previous;
                 }
 
-                const newQueue = tracks ?? [track];
-                const index = newQueue.findIndex(
-                    (song) => song.id === track.id
-                );
-
-                return index === -1
-                    ? { queue: [track], index: 0 }
-                    : { queue: newQueue, index };
+                return {
+                    ...previous,
+                    originalQueue,
+                    queue: previous.shuffleEnabled
+                        ? shuffledQueue
+                        : originalQueue,
+                    index: previous.shuffleEnabled
+                        ? 0
+                        : originalQueue.findIndex(
+                            (song) => song.id === track.id
+                        ),
+                };
             });
         },
         []
@@ -472,6 +509,35 @@ export function PlayerProvider({
         });
     }
 
+    function toggleShuffle() {
+        if (!currentTrack) return;
+
+        if (playback.shuffleEnabled) {
+            setPlayback({
+                ...playback,
+                queue: playback.originalQueue,
+                index: playback.originalQueue.findIndex(
+                    (track) => track.id === currentTrack.id
+                ),
+                shuffleEnabled: false,
+            });
+        } else {
+            const remainingTracks = queue.filter(
+                (track) => track.id !== currentTrack.id
+            );
+
+            setPlayback({
+                ...playback,
+                queue: [
+                    currentTrack,
+                    ...shuffleTracks(remainingTracks),
+                ],
+                index: 0,
+                shuffleEnabled: true,
+            });
+        }
+    }
+
     return (
         <PlayerContext.Provider
             value={{
@@ -496,6 +562,8 @@ export function PlayerProvider({
                 playlistsLoaded,
                 repeatMode,
                 cycleRepeatMode,
+                shuffleEnabled: playback.shuffleEnabled,
+                toggleShuffle,
             }}
         >
             {children}
