@@ -20,12 +20,12 @@ export default function NowPlayingDetails({
     const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
 
     useEffect(() => {
-        if (routeTrack && currentTrack?.id !== routeTrack.id) {
+        if (routeTrack) {
             selectTrack(routeTrack);
         }
-    }, [routeTrack, currentTrack?.id, selectTrack]);
+    }, [routeTrack, selectTrack]);
 
-    const track = routeTrack ?? currentTrack;
+    const track = currentTrack ?? routeTrack;
 
     const isFavorite = track
         ? favorites.some(fav => fav.id === track.id)

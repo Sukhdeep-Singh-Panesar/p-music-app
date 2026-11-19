@@ -11,6 +11,7 @@ import {
     useState,
     useEffect,
     useRef,
+    useCallback,
     type ReactNode,
 } from "react";
 
@@ -35,7 +36,11 @@ export type PlayerTrack = {
 
 type PlayerContextType = {
     currentTrack: PlayerTrack | null;
-    selectTrack: (track: PlayerTrack) => void;
+    selectTrack: (track: PlayerTrack, tracks?: PlayerTrack[]) => void;
+    queue: PlayerTrack[];
+    currentIndex: number;
+    playNext: () => void;
+    playPrevious: () => void;
     favorites: PlayerTrack[];
     toggleFavorite: (track: PlayerTrack) => Promise<void>;
     playlists: Playlist[];
@@ -57,8 +62,17 @@ export function PlayerProvider({
     const { isLoaded, isSignedIn, userId, sessionId } = useAuth();
     const pendingFavorites = useRef<Set<string>>(new Set());
     const pendingPlaylists = useRef<Set<string>>(new Set());
-    const [currentTrack, setCurrentTrack] =
-        useState<PlayerTrack | null>(null);
+    const [playback, setPlayback] = useState<{
+        queue: PlayerTrack[];
+        index: number;
+    }>({
+        queue: [],
+        index: 0,
+    });
+
+    const queue = playback.queue;
+    const currentIndex = playback.index;
+    const currentTrack = queue[currentIndex] ?? null;
 
     const [playlistState, setPlaylistState] = useState<{
         owner: string;
@@ -394,11 +408,54 @@ export function PlayerProvider({
             pendingPlaylists.current.delete(requestKey);
         }
     }
+
+    const selectTrack = useCallback(
+        (track: PlayerTrack, tracks?: PlayerTrack[]) => {
+            setPlayback((previous) => {
+                if (!tracks && previous.queue[previous.index]?.id === track.id) {
+                    return previous;
+                }
+
+                const newQueue = tracks ?? [track];
+                const index = newQueue.findIndex(
+                    (song) => song.id === track.id
+                );
+
+                return index === -1
+                    ? { queue: [track], index: 0 }
+                    : { queue: newQueue, index };
+            });
+        },
+        []
+    );
+
+    const playNext = useCallback(() => {
+        setPlayback((previous) => {
+            if (previous.index >= previous.queue.length - 1) {
+                return previous;
+            }
+
+            return { ...previous, index: previous.index + 1 };
+        });
+    }, []);
+
+    const playPrevious = useCallback(() => {
+        setPlayback((previous) => {
+            if (previous.index === 0) return previous;
+
+            return { ...previous, index: previous.index - 1 };
+        });
+    }, []);
+
     return (
         <PlayerContext.Provider
             value={{
                 currentTrack,
-                selectTrack: setCurrentTrack,
+                selectTrack,
+                queue,
+                currentIndex,
+                playNext,
+                playPrevious,
                 favorites: isLoaded && isSignedIn &&
                 favoritesOwner === userId &&
                 favoriteState?.session === sessionId

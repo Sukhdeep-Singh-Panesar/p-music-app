@@ -29,14 +29,20 @@ async function searchTracks(query: string): Promise<AudiusTrack[]> {
     return result.data;
 }
 
+
 export default async function SearchPage({
                                              searchParams,
                                          }: {
     searchParams: Promise<{ q?: string }>;
 }) {
+
     const { q = "" } = await searchParams;
     const tracks = q.trim() ? await searchTracks(q.trim()) : [];
-
+    const playbackTracks = tracks.map((track) => ({
+        id: track.id,
+        title: track.title,
+        artist: track.user.name,
+    }));
     return (
         <main className="p-8">
             <h1 className="mb-6 text-3xl font-bold text-white">
@@ -58,6 +64,7 @@ export default async function SearchPage({
                     )}
                     {tracks.map((track) => (
                         <TrackCard
+                            tracks={playbackTracks}
                             id={track.id}
                             key={track.id}
                             title={track.title}

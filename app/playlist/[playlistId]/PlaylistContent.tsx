@@ -77,6 +77,7 @@ export default function PlaylistPage() {
                             id={track.id}
                             title={track.title}
                             artist={track.artist}
+                            tracks={playlist.tracks}
                         />
 
                         <button
