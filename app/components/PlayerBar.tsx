@@ -31,6 +31,9 @@ export default function PlayerBar() {
     const isPlaying =
         currentTrack !== null && playingTrackId === currentTrack.id;
 
+    const [playbackError, setPlaybackError] =
+        useState<string | null>(null);
+
     function togglePlayback() {
         const audio = audioRef.current;
 
@@ -38,11 +41,14 @@ export default function PlayerBar() {
 
         if (audio.paused) {
             void audio.play().catch((error) => {
+                setPlaybackError("Unable to play this track.");
                 console.error("Audio playback failed:", error);
             });
         } else {
             audio.pause();
         }
+
+
     }
 
 
@@ -166,10 +172,30 @@ export default function PlayerBar() {
 
                         <span className="text-sm">{volume}%</span>
                     </div>
+
+                    {playbackError && (
+                        <p role="alert" className="text-sm text-red-400">
+                            {playbackError}
+                        </p>
+                    )}
                 <audio
                     ref={audioRef}
-                    onPlay={() => setPlayingTrackId(currentTrack.id)}
-                    onPause={() => setPlayingTrackId(null)}
+                    onPlay={() => {
+                        setPlayingTrackId(currentTrack.id);
+                        setPlaybackError(null);
+                    }}
+
+                    onLoadStart={() => {
+                        setCurrentTime(0);
+                        setDuration(0);
+                        setPlaybackError(null);
+                        setPlayingTrackId(null);
+                    }}
+
+                    onError={() => {
+                        setPlayingTrackId(null);
+                        setPlaybackError("This track could not be loaded.");
+                    }}                    onPause={() => setPlayingTrackId(null)}
                     onEnded={() => {
                         setPlayingTrackId(null);
                         playNext();
