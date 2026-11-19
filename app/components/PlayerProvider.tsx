@@ -34,6 +34,8 @@ export type PlayerTrack = {
     artist: string;
 };
 
+type RepeatMode = "off" | "all" | "one";
+
 type PlayerContextType = {
     currentTrack: PlayerTrack | null;
     selectTrack: (track: PlayerTrack, tracks?: PlayerTrack[]) => void;
@@ -50,6 +52,8 @@ type PlayerContextType = {
     removeTrackFromPlaylist: (playlistId: string, trackId: string) => Promise<void>;
     renamePlaylist: (playlistId: string, name: string) => Promise<void>;
     playlistsLoaded: boolean;
+    repeatMode: RepeatMode;
+    cycleRepeatMode: () => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
@@ -98,6 +102,8 @@ export function PlayerProvider({
         tracks: PlayerTrack[];
         session: string;
     } | null>(null);
+
+    const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
 
     const favorites = favoriteState?.tracks ?? [];
     const favoritesOwner = favoriteState?.owner ?? null;
@@ -431,13 +437,17 @@ export function PlayerProvider({
 
     const playNext = useCallback(() => {
         setPlayback((previous) => {
+            if (previous.queue.length === 0) return previous;
+
             if (previous.index >= previous.queue.length - 1) {
-                return previous;
+                return repeatMode === "all"
+                    ? { ...previous, index: 0 }
+                    : previous;
             }
 
             return { ...previous, index: previous.index + 1 };
         });
-    }, []);
+    }, [repeatMode]);
 
     const playPrevious = useCallback(() => {
         setPlayback((previous) => {
@@ -446,6 +456,15 @@ export function PlayerProvider({
             return { ...previous, index: previous.index - 1 };
         });
     }, []);
+
+    function cycleRepeatMode() {
+        setRepeatMode((previous) => {
+            if (previous === "off") return "all";
+            if (previous === "all") return "one";
+
+            return "off";
+        });
+    }
 
     return (
         <PlayerContext.Provider
@@ -469,6 +488,8 @@ export function PlayerProvider({
                 removeTrackFromPlaylist,
                 renamePlaylist,
                 playlistsLoaded,
+                repeatMode,
+                cycleRepeatMode,
             }}
         >
             {children}

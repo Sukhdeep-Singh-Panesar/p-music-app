@@ -11,6 +11,8 @@ export default function PlayerBar() {
         currentIndex,
         playNext,
         playPrevious,
+        repeatMode,
+        cycleRepeatMode,
     } = usePlayer();
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -89,7 +91,10 @@ export default function PlayerBar() {
                     <button
                         type="button"
                         onClick={playPrevious}
-                        disabled={currentIndex === 0}
+                        disabled={
+                            queue.length <= 1 ||
+                            (repeatMode !== "all" && currentIndex === 0)
+                        }
                     >
                         Previous
                     </button>
@@ -105,10 +110,21 @@ export default function PlayerBar() {
                     <button
                         type="button"
                         onClick={playNext}
-                        disabled={currentIndex >= queue.length - 1}
+                        disabled={
+                            queue.length <= 1 ||
+                            (repeatMode !== "all" && currentIndex >= queue.length - 1)
+                        }
                     >
                         Next
                     </button>
+
+                    <button
+                        type="button"
+                        onClick={cycleRepeatMode}
+                    >
+                        Repeat: {repeatMode}
+                    </button>
+
                     <p className="text-sm text-gray-400">
                         {Math.floor(currentTime)} seconds
                     </p>
@@ -160,6 +176,10 @@ export default function PlayerBar() {
                     onVolumeChange={(event) => {
                         setVolume(Math.round(event.currentTarget.volume * 100));
                     }}
+                    loop={
+                        repeatMode === "one" ||
+                        (repeatMode === "all" && queue.length === 1)
+                    }
                     key={currentTrack.id}
                     controls
                     autoPlay
