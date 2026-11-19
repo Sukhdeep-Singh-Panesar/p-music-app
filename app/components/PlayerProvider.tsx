@@ -451,11 +451,17 @@ export function PlayerProvider({
 
     const playPrevious = useCallback(() => {
         setPlayback((previous) => {
-            if (previous.index === 0) return previous;
+            if (previous.queue.length === 0) return previous;
+
+            if (previous.index === 0) {
+                return repeatMode === "all"
+                    ? { ...previous, index: previous.queue.length - 1 }
+                    : previous;
+            }
 
             return { ...previous, index: previous.index - 1 };
         });
-    }, []);
+    }, [repeatMode]);
 
     function cycleRepeatMode() {
         setRepeatMode((previous) => {
