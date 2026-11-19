@@ -5,7 +5,14 @@ import PlayerStatus from "./PlayerStatus";
 import { useRef, useState, type ChangeEvent } from "react";
 
 export default function PlayerBar() {
-    const { currentTrack } = usePlayer();
+    const {
+        currentTrack,
+        queue,
+        currentIndex,
+        playNext,
+        playPrevious,
+    } = usePlayer();
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const [playingTrackId, setPlayingTrackId] =
@@ -81,10 +88,26 @@ export default function PlayerBar() {
                 <div className="flex flex-col items-center gap-2">
                     <button
                         type="button"
+                        onClick={playPrevious}
+                        disabled={currentIndex === 0}
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        type="button"
                         onClick={togglePlayback}
                         className="rounded-lg bg-indigo-500 px-4 py-2 text-sm text-white"
                     >
                         {isPlaying ? "Pause" : "Play"}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={playNext}
+                        disabled={currentIndex >= queue.length - 1}
+                    >
+                        Next
                     </button>
                     <p className="text-sm text-gray-400">
                         {Math.floor(currentTime)} seconds
@@ -121,7 +144,11 @@ export default function PlayerBar() {
                     ref={audioRef}
                     onPlay={() => setPlayingTrackId(currentTrack.id)}
                     onPause={() => setPlayingTrackId(null)}
-                    onEnded={() => setPlayingTrackId(null)}
+                    onEnded={() => {
+                        setPlayingTrackId(null);
+                        playNext();
+                    }}
+
                     onTimeUpdate={(event) => {
                         setCurrentTime(event.currentTarget.currentTime);
                     }}
@@ -135,6 +162,7 @@ export default function PlayerBar() {
                     }}
                     key={currentTrack.id}
                     controls
+                    autoPlay
                     preload="metadata"
                     src={`https://api.audius.co/v1/tracks/${encodeURIComponent(currentTrack.id)}/stream`}
                     className="h-10 w-full max-w-md sm:w-80"
