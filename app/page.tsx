@@ -16,7 +16,7 @@ type AudiusResponse = {
 
 async function getTrendingTracks(): Promise<AudiusTrack[]> {
     const response = await fetch(
-        "https://api.audius.co/v1/tracks/trending?limit=1",
+        "https://api.audius.co/v1/tracks/trending?limit=12",
         { next: { revalidate: 3600 } }
     );
 
@@ -31,6 +31,13 @@ async function getTrendingTracks(): Promise<AudiusTrack[]> {
 
 export default async function Home() {
     const tracks = await getTrendingTracks();
+
+    const playbackTracks = tracks.map((track) => ({
+        id: track.id,
+        title: track.title,
+        artist: track.user.name,
+    }));
+
     const message = "Discover your next favorite track";
   return (
       <div className="flex flex-col items-center justify-center mt-0 min-h-screen">
@@ -40,6 +47,7 @@ export default async function Home() {
         <WelcomeMessage message={message} />
           {tracks.map((track) => (
             <TrackCard
+                tracks={playbackTracks}
               id={track.id}
               key={track.id}
               title={track.title}

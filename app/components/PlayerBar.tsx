@@ -5,7 +5,18 @@ import PlayerStatus from "./PlayerStatus";
 import { useRef, useState, type ChangeEvent } from "react";
 
 export default function PlayerBar() {
-    const { currentTrack } = usePlayer();
+    const {
+        currentTrack,
+        queue,
+        currentIndex,
+        playNext,
+        playPrevious,
+        repeatMode,
+        cycleRepeatMode,
+        shuffleEnabled,
+        toggleShuffle,
+    } = usePlayer();
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
     const [playingTrackId, setPlayingTrackId] =
@@ -20,6 +31,9 @@ export default function PlayerBar() {
     const isPlaying =
         currentTrack !== null && playingTrackId === currentTrack.id;
 
+    const [playbackError, setPlaybackError] =
+        useState<string | null>(null);
+
     function togglePlayback() {
         const audio = audioRef.current;
 
@@ -27,11 +41,14 @@ export default function PlayerBar() {
 
         if (audio.paused) {
             void audio.play().catch((error) => {
+                setPlaybackError("Unable to play this track.");
                 console.error("Audio playback failed:", error);
             });
         } else {
             audio.pause();
         }
+
+
     }
 
 
@@ -81,11 +98,49 @@ export default function PlayerBar() {
                 <div className="flex flex-col items-center gap-2">
                     <button
                         type="button"
+                        onClick={playPrevious}
+                        disabled={
+                            queue.length <= 1 ||
+                            (repeatMode !== "all" && currentIndex === 0)
+                        }
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        type="button"
                         onClick={togglePlayback}
                         className="rounded-lg bg-indigo-500 px-4 py-2 text-sm text-white"
                     >
                         {isPlaying ? "Pause" : "Play"}
                     </button>
+
+                    <button
+                        type="button"
+                        onClick={playNext}
+                        disabled={
+                            queue.length <= 1 ||
+                            (repeatMode !== "all" && currentIndex >= queue.length - 1)
+                        }
+                    >
+                        Next
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={cycleRepeatMode}
+                    >
+                        Repeat: {repeatMode}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={toggleShuffle}
+                        aria-pressed={shuffleEnabled}
+                    >
+                        Shuffle: {shuffleEnabled ? "On" : "Off"}
+                    </button>
+
                     <p className="text-sm text-gray-400">
                         {Math.floor(currentTime)} seconds
                     </p>
@@ -117,11 +172,35 @@ export default function PlayerBar() {
 
                         <span className="text-sm">{volume}%</span>
                     </div>
+
+                    {playbackError && (
+                        <p role="alert" className="text-sm text-red-400">
+                            {playbackError}
+                        </p>
+                    )}
                 <audio
                     ref={audioRef}
-                    onPlay={() => setPlayingTrackId(currentTrack.id)}
-                    onPause={() => setPlayingTrackId(null)}
-                    onEnded={() => setPlayingTrackId(null)}
+                    onPlay={() => {
+                        setPlayingTrackId(currentTrack.id);
+                        setPlaybackError(null);
+                    }}
+
+                    onLoadStart={() => {
+                        setCurrentTime(0);
+                        setDuration(0);
+                        setPlaybackError(null);
+                        setPlayingTrackId(null);
+                    }}
+
+                    onError={() => {
+                        setPlayingTrackId(null);
+                        setPlaybackError("This track could not be loaded.");
+                    }}                    onPause={() => setPlayingTrackId(null)}
+                    onEnded={() => {
+                        setPlayingTrackId(null);
+                        playNext();
+                    }}
+
                     onTimeUpdate={(event) => {
                         setCurrentTime(event.currentTarget.currentTime);
                     }}
@@ -133,8 +212,13 @@ export default function PlayerBar() {
                     onVolumeChange={(event) => {
                         setVolume(Math.round(event.currentTarget.volume * 100));
                     }}
+                    loop={
+                        repeatMode === "one" ||
+                        (repeatMode === "all" && queue.length === 1)
+                    }
                     key={currentTrack.id}
                     controls
+                    autoPlay
                     preload="metadata"
                     src={`https://api.audius.co/v1/tracks/${encodeURIComponent(currentTrack.id)}/stream`}
                     className="h-10 w-full max-w-md sm:w-80"

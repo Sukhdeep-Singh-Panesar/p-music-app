@@ -11,6 +11,7 @@ import {
     useState,
     useEffect,
     useRef,
+    useCallback,
     type ReactNode,
 } from "react";
 
@@ -33,9 +34,15 @@ export type PlayerTrack = {
     artist: string;
 };
 
+type RepeatMode = "off" | "all" | "one";
+
 type PlayerContextType = {
     currentTrack: PlayerTrack | null;
-    selectTrack: (track: PlayerTrack) => void;
+    selectTrack: (track: PlayerTrack, tracks?: PlayerTrack[]) => void;
+    queue: PlayerTrack[];
+    currentIndex: number;
+    playNext: () => void;
+    playPrevious: () => void;
     favorites: PlayerTrack[];
     toggleFavorite: (track: PlayerTrack) => Promise<void>;
     playlists: Playlist[];
@@ -45,9 +52,26 @@ type PlayerContextType = {
     removeTrackFromPlaylist: (playlistId: string, trackId: string) => Promise<void>;
     renamePlaylist: (playlistId: string, name: string) => Promise<void>;
     playlistsLoaded: boolean;
+    repeatMode: RepeatMode;
+    cycleRepeatMode: () => void;
+    shuffleEnabled: boolean;
+    toggleShuffle: () => void;
 };
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
+
+function shuffleTracks(tracks: PlayerTrack[]): PlayerTrack[] {
+    const shuffled = [...tracks];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[j]] =
+            [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
 
 export function PlayerProvider({
                                    children,
@@ -57,8 +81,21 @@ export function PlayerProvider({
     const { isLoaded, isSignedIn, userId, sessionId } = useAuth();
     const pendingFavorites = useRef<Set<string>>(new Set());
     const pendingPlaylists = useRef<Set<string>>(new Set());
-    const [currentTrack, setCurrentTrack] =
-        useState<PlayerTrack | null>(null);
+    const [playback, setPlayback] = useState<{
+        queue: PlayerTrack[];
+        originalQueue: PlayerTrack[];
+        index: number;
+        shuffleEnabled: boolean;
+    }>({
+        queue: [],
+        originalQueue: [],
+        index: 0,
+        shuffleEnabled: false,
+    });
+
+    const queue = playback.queue;
+    const currentIndex = playback.index;
+    const currentTrack = queue[currentIndex] ?? null;
 
     const [playlistState, setPlaylistState] = useState<{
         owner: string;
@@ -84,6 +121,8 @@ export function PlayerProvider({
         tracks: PlayerTrack[];
         session: string;
     } | null>(null);
+
+    const [repeatMode, setRepeatMode] = useState<RepeatMode>("off");
 
     const favorites = favoriteState?.tracks ?? [];
     const favoritesOwner = favoriteState?.owner ?? null;
@@ -394,11 +433,120 @@ export function PlayerProvider({
             pendingPlaylists.current.delete(requestKey);
         }
     }
+
+    const selectTrack = useCallback(
+        (track: PlayerTrack, tracks?: PlayerTrack[]) => {
+            const originalQueue = tracks?.some(
+                (song) => song.id === track.id
+            ) ? tracks : [track];
+
+            const shuffledQueue = [
+                track,
+                ...shuffleTracks(
+                    originalQueue.filter(
+                        (song) => song.id !== track.id
+                    )
+                ),
+            ];
+
+            setPlayback((previous) => {
+                if (!tracks &&
+                    previous.queue[previous.index]?.id === track.id) {
+                    return previous;
+                }
+
+                return {
+                    ...previous,
+                    originalQueue,
+                    queue: previous.shuffleEnabled
+                        ? shuffledQueue
+                        : originalQueue,
+                    index: previous.shuffleEnabled
+                        ? 0
+                        : originalQueue.findIndex(
+                            (song) => song.id === track.id
+                        ),
+                };
+            });
+        },
+        []
+    );
+
+    const playNext = useCallback(() => {
+        setPlayback((previous) => {
+            if (previous.queue.length === 0) return previous;
+
+            if (previous.index >= previous.queue.length - 1) {
+                return repeatMode === "all"
+                    ? { ...previous, index: 0 }
+                    : previous;
+            }
+
+            return { ...previous, index: previous.index + 1 };
+        });
+    }, [repeatMode]);
+
+    const playPrevious = useCallback(() => {
+        setPlayback((previous) => {
+            if (previous.queue.length === 0) return previous;
+
+            if (previous.index === 0) {
+                return repeatMode === "all"
+                    ? { ...previous, index: previous.queue.length - 1 }
+                    : previous;
+            }
+
+            return { ...previous, index: previous.index - 1 };
+        });
+    }, [repeatMode]);
+
+    function cycleRepeatMode() {
+        setRepeatMode((previous) => {
+            if (previous === "off") return "all";
+            if (previous === "all") return "one";
+
+            return "off";
+        });
+    }
+
+    function toggleShuffle() {
+        if (!currentTrack) return;
+
+        if (playback.shuffleEnabled) {
+            setPlayback({
+                ...playback,
+                queue: playback.originalQueue,
+                index: playback.originalQueue.findIndex(
+                    (track) => track.id === currentTrack.id
+                ),
+                shuffleEnabled: false,
+            });
+        } else {
+            const remainingTracks = queue.filter(
+                (track) => track.id !== currentTrack.id
+            );
+
+            setPlayback({
+                ...playback,
+                queue: [
+                    currentTrack,
+                    ...shuffleTracks(remainingTracks),
+                ],
+                index: 0,
+                shuffleEnabled: true,
+            });
+        }
+    }
+
     return (
         <PlayerContext.Provider
             value={{
                 currentTrack,
-                selectTrack: setCurrentTrack,
+                selectTrack,
+                queue,
+                currentIndex,
+                playNext,
+                playPrevious,
                 favorites: isLoaded && isSignedIn &&
                 favoritesOwner === userId &&
                 favoriteState?.session === sessionId
@@ -412,6 +560,10 @@ export function PlayerProvider({
                 removeTrackFromPlaylist,
                 renamePlaylist,
                 playlistsLoaded,
+                repeatMode,
+                cycleRepeatMode,
+                shuffleEnabled: playback.shuffleEnabled,
+                toggleShuffle,
             }}
         >
             {children}

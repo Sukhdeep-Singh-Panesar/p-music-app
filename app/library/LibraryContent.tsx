@@ -93,6 +93,7 @@ export default function LibraryPage() {
                         id={track.id}
                         title={track.title}
                         artist={track.artist}
+                        tracks={favorites}
                     />
                 ))}
             </div>
