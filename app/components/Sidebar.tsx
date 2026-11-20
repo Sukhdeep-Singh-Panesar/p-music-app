@@ -57,14 +57,6 @@ export default function Sidebar() {
                     activeIcon="/icons/audio-lines-active.svg"
                 />
 
-                <NavigationItem
-                    href="/search"
-                    label="Search"
-                    active={pathname === "/search"}
-                    icon="/icons/search.svg"
-                    iconSize={18}
-                />
-
 
             </nav>
             {playlistsLoaded && isLoaded && isSignedIn && (

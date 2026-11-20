@@ -4,9 +4,8 @@ import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { PlayerProvider } from "./components/PlayerProvider";
 import PlayerBar from "./components/PlayerBar";
-import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
-import { Suspense } from "react";
-
+import { ClerkProvider } from "@clerk/nextjs";
+import Header from "./components/Header";
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
@@ -41,18 +40,7 @@ export default function RootLayout({
 
           {/*  MAIN CONTENT AREA  */}
           <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-desktop-sidebar">
-              <header className="flex items-center justify-end gap-4 p-4 text-white">
-                  <Suspense>
-                      <Show when="signed-out">
-                          <SignInButton />
-                          <SignUpButton />
-                      </Show>
-
-                      <Show when="signed-in">
-                          <UserButton />
-                      </Show>
-                  </Suspense>
-              </header>
+                <Header />
               {children}
           </div>
       </div>
