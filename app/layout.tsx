@@ -35,12 +35,12 @@ export default function RootLayout({
           <PlayerProvider>
                                      {/*  MAIN APP CONTAINER  */}
 
-      <div className="flex flex-row min-h-screen bg-[#0f172a] ">
-          {/*  LEFT SIDEBAR  */}
+              <div className="flex min-h-screen flex-row bg-background">
+                  {/*  LEFT SIDEBAR  */}
         <Sidebar />
 
           {/*  MAIN CONTENT AREA  */}
-          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-56">
+          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-desktop-sidebar">
               <header className="flex items-center justify-end gap-4 p-4 text-white">
                   <Suspense>
                       <Show when="signed-out">

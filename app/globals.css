@@ -20,6 +20,8 @@
   --error: #fda4af;
 
   --accent: #b6b8ff;
+
+  --muted: #7786a4;
 }
 
 @theme inline {
@@ -73,6 +75,8 @@
   --color-error: var(--error);
 
   --color-accent: var(--accent);
+
+  --color-muted: var(--muted);
 }
 
 
