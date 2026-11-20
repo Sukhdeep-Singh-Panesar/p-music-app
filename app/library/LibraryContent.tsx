@@ -1,18 +1,36 @@
 "use client";
-import Link from "next/link";
 import { usePlayer } from "../components/PlayerProvider";
 import TrackCard from "../components/TrackCard";
 import { useState } from "react";
 import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
 import MusicCard from "../components/ui/MusicCard";
+import CreatePlaylistDialog from "../components/CreatePlaylistDialog";
 export default function LibraryPage() {
     const { favorites, playlists, createPlaylist, deletePlaylist } = usePlayer();
     const [playlistName, setPlaylistName] = useState("");
 
-    function handleCreatePlaylist() {
-        createPlaylist(playlistName);
-        setPlaylistName("");
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
+    const [playlistError, setPlaylistError] = useState("");
+
+    async function handleCreatePlaylist() {
+        if (!playlistName.trim() || isCreating) return;
+
+        setIsCreating(true);
+        setPlaylistError("");
+
+        try {
+            const success = await createPlaylist(playlistName);
+
+            if (success) {
+                setPlaylistName("");
+                setDialogOpen(false);
+            } else {
+                setPlaylistError("Unable to create playlist. Try again.");
+            }
+        } finally {
+            setIsCreating(false);
+        }
     }
     return (
         <main className="p-8">
@@ -23,26 +41,27 @@ export default function LibraryPage() {
                 {favorites.length} saved songs
             </p>
 
-            <form
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    handleCreatePlaylist();
-                }}
-                className="mt-6 flex items-center gap-3"
-            >
-                <Input
-                    type="text"
-                    value={playlistName}
-                    onChange={(event) => setPlaylistName(event.target.value)}
-                    placeholder="Enter playlist name"
-                    aria-label="Playlist name"
-                />
-
-                <Button type="submit">
-                    Create Playlist
+            <div className="mt-6">
+                <Button onClick={() => setDialogOpen(true)}>
+                    Create playlist
                 </Button>
+            </div>
 
-            </form>
+            <CreatePlaylistDialog
+                open={dialogOpen}
+                name={playlistName}
+                onNameChange={setPlaylistName}
+                isCreating={isCreating}
+                error={playlistError}
+                onClose={() => {
+                    if (isCreating) return;
+
+                    setDialogOpen(false);
+                    setPlaylistName("");
+                    setPlaylistError("");
+                }}
+                onCreate={handleCreatePlaylist}
+            />
 
             <section className="mt-8">
                 <h2 className="text-xl font-semibold text-white">
