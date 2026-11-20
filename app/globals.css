@@ -15,6 +15,9 @@
   --primary-hover: #7a7dff;
   --raised-hover: #2a3854;
   --focus: #c7c9ff;
+
+  --input-focus: #a5a7ff;
+  --error: #fda4af;
 }
 
 @theme inline {
@@ -63,6 +66,9 @@
   --color-primary-hover: var(--primary-hover);
   --color-raised-hover: var(--raised-hover);
   --color-focus: var(--focus);
+
+  --color-input-focus: var(--input-focus);
+  --color-error: var(--error);
 }
 
 

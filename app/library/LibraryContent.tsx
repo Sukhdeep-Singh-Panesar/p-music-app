@@ -4,6 +4,7 @@ import { usePlayer } from "../components/PlayerProvider";
 import TrackCard from "../components/TrackCard";
 import { useState } from "react";
 import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
 export default function LibraryPage() {
     const { favorites, playlists, createPlaylist, deletePlaylist } = usePlayer();
     const [playlistName, setPlaylistName] = useState("");
@@ -26,14 +27,14 @@ export default function LibraryPage() {
                     event.preventDefault();
                     handleCreatePlaylist();
                 }}
-                className="mt-6 flex gap-3"
+                className="mt-6 flex items-center gap-3"
             >
-                <input
+                <Input
                     type="text"
                     value={playlistName}
                     onChange={(event) => setPlaylistName(event.target.value)}
                     placeholder="Enter playlist name"
-                    className="rounded-lg bg-gray-800 px-4 py-2 text-white"
+                    aria-label="Playlist name"
                 />
 
                 <Button type="submit">
