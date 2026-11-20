@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { PlayerProvider } from "./components/PlayerProvider";
@@ -7,9 +7,10 @@ import PlayerBar from "./components/PlayerBar";
 import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import { Suspense } from "react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const inter = Inter({
+    variable: "--font-inter",
+    subsets: ["latin"],
+    display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -29,8 +30,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-      <ClerkProvider>
+    <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+    <ClerkProvider>
           <PlayerProvider>
                                      {/*  MAIN APP CONTAINER  */}
 

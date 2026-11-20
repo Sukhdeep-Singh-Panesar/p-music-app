@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f7f8ff;
+  --surface: #151f35;
+  --raised: #1c2840;
+  --sidebar: #0b1120;
+  --primary: #6366f1;
+  --secondary: #a6b2ca;
+  --border: #2a3650;
+  --purple: #9333ea;
+  --selected: #262647;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-sidebar: var(--sidebar);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-border: var(--border);
+  --color-purple: var(--purple);
+  --color-selected: var(--selected);
+  --text-display: 48px;
+  --text-display--line-height: 1.12;
+  --text-display--font-weight: 700;
+
+  --text-page-title: 32px;
+  --text-page-title--line-height: 1.12;
+  --text-page-title--font-weight: 700;
+
+  --text-section-title: 23px;
+  --text-section-title--line-height: 1.25;
+  --text-section-title--font-weight: 600;
+
+  --text-body: 14px;
+  --text-body--line-height: 1.4;
+  --text-body--font-weight: 400;
+
+  --text-overline: 11px;
+  --text-overline--line-height: 1.4;
+  --text-overline--font-weight: 600;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   background: var(--background);
   color: var(--foreground);
- font-family: Arial, Helvetica, "Times New Roman", Times, serif;
+  font-family: var(--font-inter), sans-serif;
 }
