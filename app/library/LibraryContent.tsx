@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePlayer } from "../components/PlayerProvider";
 import TrackCard from "../components/TrackCard";
 import { useState } from "react";
+import Button from "../components/ui/Button";
 export default function LibraryPage() {
     const { favorites, playlists, createPlaylist, deletePlaylist } = usePlayer();
     const [playlistName, setPlaylistName] = useState("");
@@ -35,12 +36,10 @@ export default function LibraryPage() {
                     className="rounded-lg bg-gray-800 px-4 py-2 text-white"
                 />
 
-                <button
-                    type="submit"
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-white"
-                >
+                <Button type="submit">
                     Create Playlist
-                </button>
+                </Button>
+
             </form>
 
             <section className="mt-8">

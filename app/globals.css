@@ -11,6 +11,10 @@
   --border: #2a3650;
   --purple: #9333ea;
   --selected: #262647;
+
+  --primary-hover: #7a7dff;
+  --raised-hover: #2a3854;
+  --focus: #c7c9ff;
 }
 
 @theme inline {
@@ -55,6 +59,10 @@
   --radius-card: 16px;
   --radius-hero: 24px;
   --radius-pill: 100px;
+
+  --color-primary-hover: var(--primary-hover);
+  --color-raised-hover: var(--raised-hover);
+  --color-focus: var(--focus);
 }
 
 
