@@ -51,6 +51,16 @@ export default function PlayerBar() {
 
     }
 
+    function formatTime(time: number): string {
+        if (!Number.isFinite(time) || time < 0) {
+            return "0:00";
+        }
+
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+
+        return `${minutes}:${String(seconds).padStart(2, "0")}`;
+    }
 
     const progress =
         Number.isFinite(duration) && duration > 0
@@ -142,7 +152,7 @@ export default function PlayerBar() {
                     </button>
 
                     <p className="text-sm text-gray-400">
-                        {Math.floor(currentTime)} seconds
+                        {formatTime(currentTime)} / {formatTime(duration)}
                     </p>
                     <input
                         type="range"
