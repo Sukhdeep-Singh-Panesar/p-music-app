@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { usePlayer } from "./PlayerProvider";
 import { useAuth } from "@clerk/nextjs";
+import NavigationItem from "./ui/NavigationItem";
 
 export default function Sidebar() {
     const pathname = usePathname();
@@ -20,54 +21,37 @@ export default function Sidebar() {
                     YOUR SOUND, YOUR SPACE
                 </p>
 
-                <Link
+                <NavigationItem
                     href="/"
-                    aria-current={pathname === "/" ? "page" : undefined}
-                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
-                        pathname === "/"
-                            ? "bg-[#262647] text-white"
-                            : "text-[#a6b2ca] hover:text-white"
-                    }`}
-                >
-                    Discover
-                </Link>
+                    label="Discover"
+                    active={pathname === "/"}
+                    icon="/icons/compass.svg"
+                    activeIcon="/icons/compass-active.svg"
+                />
 
-
-                <Link
+                <NavigationItem
                     href="/library"
-                    aria-current={pathname === "/library" ? "page" : undefined}
-                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
-                        pathname === "/library"
-                            ? "bg-[#262647] text-white"
-                            : "text-[#a6b2ca] hover:text-white"
-                    }`}
-                >
-                    Your Library
-                </Link>
+                    label="Your Library"
+                    active={pathname === "/library"}
+                    icon="/icons/library.svg"
+                    activeIcon="/icons/library-active.svg"
+                />
 
-                <Link
+                <NavigationItem
                     href="/now-playing"
-                    aria-current={pathname === "/now-playing" ? "page" : undefined}
-                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
-                        pathname === "/now-playing"
-                            ? "bg-[#262647] text-white"
-                            : "text-[#a6b2ca] hover:text-white"
-                    }`}
-                >
-                    Now Playing
-                </Link>
+                    label="Now Playing"
+                    active={pathname === "/now-playing"}
+                    icon="/icons/audio-lines.svg"
+                    activeIcon="/icons/audio-lines-active.svg"
+                />
 
-                <Link
+                <NavigationItem
                     href="/search"
-                    aria-current={pathname === "/search" ? "page" : undefined}
-                    className={`flex h-11.5 items-center rounded-lg px-3.5 text-[13px] font-semibold ${
-                        pathname === "/search"
-                            ? "bg-[#262647] text-white"
-                            : "text-[#a6b2ca] hover:text-white"
-                    }`}
-                >
-                    Search
-                </Link>
+                    label="Search"
+                    active={pathname === "/search"}
+                    icon="/icons/search.svg"
+                    iconSize={18}
+                />
 
 
             </nav>

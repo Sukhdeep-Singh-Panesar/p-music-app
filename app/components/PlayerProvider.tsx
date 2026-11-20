@@ -46,7 +46,7 @@ type PlayerContextType = {
     favorites: PlayerTrack[];
     toggleFavorite: (track: PlayerTrack) => Promise<void>;
     playlists: Playlist[];
-    createPlaylist: (name: string) => Promise<void>;
+    createPlaylist: (name: string) => Promise<boolean>;
     deletePlaylist: (playlistId: string) => Promise<void>;
     addTrackToPlaylist: (playlistId: string, track: PlayerTrack) => Promise<void>;
     removeTrackFromPlaylist: (playlistId: string, trackId: string) => Promise<void>;
@@ -265,17 +265,19 @@ export function PlayerProvider({
         });
     }
 
-    async function createPlaylist(name: string) {
+    async function createPlaylist(name: string): Promise<boolean> {
         const trimmedName = name.trim();
 
-        if (!trimmedName || !playlistsLoaded) return;
+        if (!trimmedName || !playlistsLoaded) return false;
+
         const requestKey = `${sessionId}:create`;
 
         if (pendingPlaylists.current.has(requestKey)) {
-            return;
+            return false;
         }
 
         pendingPlaylists.current.add(requestKey);
+
         try {
             const created = await createPlaylistAction(trimmedName);
 
@@ -298,10 +300,13 @@ export function PlayerProvider({
                     ],
                 };
             });
+
+            return true;
+
         } catch (error) {
             console.error("Failed to create playlist:", error);
-        }
-        finally {
+            return false;
+        } finally {
             pendingPlaylists.current.delete(requestKey);
         }
     }

@@ -1,26 +1,83 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f172a;
+  --foreground: #f7f8ff;
+  --surface: #151f35;
+  --raised: #1c2840;
+  --sidebar: #0b1120;
+  --primary: #6366f1;
+  --secondary: #a6b2ca;
+  --border: #2a3650;
+  --purple: #9333ea;
+  --selected: #262647;
+
+  --primary-hover: #7a7dff;
+  --raised-hover: #2a3854;
+  --focus: #c7c9ff;
+
+  --input-focus: #a5a7ff;
+  --error: #fda4af;
+
+  --accent: #b6b8ff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-sidebar: var(--sidebar);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-border: var(--border);
+  --color-purple: var(--purple);
+  --color-selected: var(--selected);
+  --text-display: 48px;
+  --text-display--line-height: 1.12;
+  --text-display--font-weight: 700;
+
+  --text-page-title: 32px;
+  --text-page-title--line-height: 1.12;
+  --text-page-title--font-weight: 700;
+
+  --text-section-title: 23px;
+  --text-section-title--line-height: 1.25;
+  --text-section-title--font-weight: 600;
+
+  --text-body: 14px;
+  --text-body--line-height: 1.4;
+  --text-body--font-weight: 400;
+
+  --text-overline: 11px;
+  --text-overline--line-height: 1.4;
+  --text-overline--font-weight: 600;
+
+  --spacing-desktop-sidebar: 224px;
+  --spacing-desktop-gutter: 40px;
+  --spacing-desktop-header: 88px;
+  --spacing-desktop-player: 95px;
+
+  --radius-control: 8px;
+  --radius-card: 16px;
+  --radius-hero: 24px;
+  --radius-pill: 100px;
+
+  --color-primary-hover: var(--primary-hover);
+  --color-raised-hover: var(--raised-hover);
+  --color-focus: var(--focus);
+
+  --color-input-focus: var(--input-focus);
+  --color-error: var(--error);
+
+  --color-accent: var(--accent);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   background: var(--background);
   color: var(--foreground);
- font-family: Arial, Helvetica, "Times New Roman", Times, serif;
+  font-family: var(--font-inter), sans-serif;
 }
