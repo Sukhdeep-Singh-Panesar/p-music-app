@@ -98,151 +98,231 @@ export default function PlayerBar() {
     return (
         <footer
             aria-label="Music player"
-            className="fixed inset-x-0 bottom-0 z-50 flex min-h-20 flex-col gap-3 border-t border-gray-800 bg-gray-950 px-4 py-3 text-white sm:flex-row sm:items-center sm:justify-between sm:px-6"
-        >
-            <div className="min-w-0 sm:w-72">
+            className="fixed inset-x-0 bottom-0 z-50
+                        flex min-h-desktop-player flex-col gap-3
+                        border-t border-border bg-sidebar
+                        px-4 py-3 text-foreground
+                        xl:h-desktop-player xl:flex-row
+                        xl:items-center xl:justify-between
+                        xl:gap-6 xl:px-7 xl:py-0">
+            <div className="w-full min-w-0 xl:w-75 xl:shrink-0">
                 <PlayerStatus />
             </div>
 
-            {currentTrack  ? (
+            {currentTrack ? (
+                <>
+                    <div className="flex w-full min-w-0 flex-col
+                                    items-center gap-2 xl:w-[440px] xl:shrink-0">
 
-                <div className="flex flex-col items-center gap-2">
-                    <button
-                        type="button"
-                        onClick={playPrevious}
-                        disabled={
-                            queue.length <= 1 ||
-                            (repeatMode !== "all" && currentIndex === 0)
-                        }
-                    >
-                        Previous
-                    </button>
+                        <div className="flex items-center justify-center gap-1">
 
-                    <IconButton
-                        variant="primary"
-                        size="large"
-                        onClick={togglePlayback}
-                        aria-label={isPlaying ? "Pause" : "Play"}
-                    >
-                        <Image
-                            src={isPlaying ? "/icons/pause.svg" : "/icons/play.svg"}
-                            alt=""
-                            width={24}
-                            height={24}
-                        />
-                    </IconButton>
-                    <button
-                        type="button"
-                        onClick={playNext}
-                        disabled={
-                            queue.length <= 1 ||
-                            (repeatMode !== "all" && currentIndex >= queue.length - 1)
-                        }
-                    >
-                        Next
-                    </button>
+                        <IconButton
+                            variant={shuffleEnabled ? "selected" : "ghost"}
+                            onClick={toggleShuffle}
+                            aria-label="Shuffle"
+                            aria-pressed={shuffleEnabled}
+                        >
+                            <Image
+                                src="/icons/shuffle.svg"
+                                alt=""
+                                width={16}
+                                height={16}
+                            />
+                        </IconButton>
 
-                    <button
-                        type="button"
-                        onClick={cycleRepeatMode}
-                    >
-                        Repeat: {repeatMode}
-                    </button>
+                        <IconButton
+                            onClick={playPrevious}
+                            aria-label="Previous track"
+                            disabled={
+                                queue.length <= 1 ||
+                                (repeatMode !== "all" && currentIndex === 0)
+                            }
+                        >
+                            <Image
+                                src="/icons/skip-back.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                            />
+                        </IconButton>
 
-                    <button
-                        type="button"
-                        onClick={toggleShuffle}
-                        aria-pressed={shuffleEnabled}
-                    >
-                        Shuffle: {shuffleEnabled ? "On" : "Off"}
-                    </button>
+                        <IconButton
+                            variant="primary"
+                            size="compact"
+                            onClick={togglePlayback}
+                            aria-label={isPlaying ? "Pause" : "Play"}
+                        >
+                            <Image
+                                src={isPlaying
+                                    ? "/icons/pause-small.svg"
+                                    : "/icons/play-small.svg"}
+                                alt=""
+                                width={17}
+                                height={17}
+                            />
+                        </IconButton>
 
-                    <p className="text-sm text-gray-400">
-                        {formatTime(currentTime)} / {formatTime(duration)}
-                    </p>
-                    <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        step={0.1}
-                        value={progress}
-                        onChange={handleSeek}
-                        disabled={!Number.isFinite(duration) || duration <= 0}
-                        aria-label="Seek through song"
-                        className="w-full max-w-md cursor-pointer"
-                    />
-                    <div className="flex items-center gap-3">
-                        <label htmlFor="player-volume" className="text-sm">
-                            Volume
-                        </label>
+                        <IconButton
+                            onClick={playNext}
+                            aria-label="Next track"
+                            disabled={
+                                queue.length <= 1 ||
+                                (repeatMode !== "all" && currentIndex >= queue.length - 1)
+                            }
+                        >
+                            <Image
+                                src="/icons/skip-forward.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                            />
+                        </IconButton>
 
+                        <IconButton
+                            variant={repeatMode !== "off" ? "selected" : "ghost"}
+                            onClick={cycleRepeatMode}
+                            aria-label={`Repeat: ${repeatMode}`}
+                            title={`Repeat: ${repeatMode}`}
+                            className="relative"
+                        >
+                            <Image
+                                src="/icons/repeat.svg"
+                                alt=""
+                                width={16}
+                                height={16}
+                            />
+
+                            {repeatMode === "one" && (
+                                <span className="absolute right-1 top-1 text-[10px] text-accent">
+                                    1
+                                </span>
+                            )}
+                        </IconButton>
+                    </div>
+
+                    <div className="flex w-full flex-col gap-2">
                         <input
-                            id="player-volume"
                             type="range"
                             min={0}
                             max={100}
-                            value={volume}
-                            onChange={handleVolumeChange}
-                            className="w-28"
+                            step={0.1}
+                            value={progress}
+                            onChange={handleSeek}
+                            disabled={!Number.isFinite(duration) || duration <= 0}
+                            aria-label="Seek through song"
+                            className="player-progress rounded
+                                    focus-visible:outline-2
+                                    focus-visible:outline-accent
+                                    disabled:cursor-not-allowed"
+                            style={{
+                                backgroundImage: `linear-gradient(
+                                                to right,
+                                                var(--primary) ${progress}%,
+                                                var(--border) ${progress}%
+                                            )`,
+                                     }}
                         />
 
-                        <span className="text-sm">{volume}%</span>
+                        <div className="flex justify-between text-[10px]
+                                        leading-[1.4] text-secondary tabular-nums">
+                            <span>{formatTime(currentTime)}</span>
+                            <span>{formatTime(duration)}</span>
+                        </div>
                     </div>
-
                     {playbackError && (
                         <p role="alert" className="text-sm text-red-400">
                             {playbackError}
                         </p>
                     )}
-                <audio
-                    ref={audioRef}
-                    onPlay={() => {
-                        setPlayingTrackId(currentTrack.id);
-                        setPlaybackError(null);
-                    }}
+                    <audio
+                        ref={audioRef}
+                        onPlay={() => {
+                            setPlayingTrackId(currentTrack.id);
+                            setPlaybackError(null);
+                        }}
 
-                    onLoadStart={() => {
-                        setCurrentTime(0);
-                        setDuration(0);
-                        setPlaybackError(null);
-                        setPlayingTrackId(null);
-                    }}
+                        onLoadStart={() => {
+                            setCurrentTime(0);
+                            setDuration(0);
+                            setPlaybackError(null);
+                            setPlayingTrackId(null);
+                        }}
 
-                    onError={() => {
-                        setPlayingTrackId(null);
-                        setPlaybackError("This track could not be loaded.");
-                    }}                    onPause={() => setPlayingTrackId(null)}
-                    onEnded={() => {
-                        setPlayingTrackId(null);
-                        playNext();
-                    }}
+                        onError={() => {
+                            setPlayingTrackId(null);
+                            setPlaybackError("This track could not be loaded.");
+                        }}                    onPause={() => setPlayingTrackId(null)}
+                        onEnded={() => {
+                            setPlayingTrackId(null);
+                            playNext();
+                        }}
 
-                    onTimeUpdate={(event) => {
-                        setCurrentTime(event.currentTarget.currentTime);
-                    }}
-                    onLoadedMetadata={(event) => {
-                        setDuration(event.currentTarget.duration);
-                        setCurrentTime(0);
-                        event.currentTarget.volume = volume / 100;
-                    }}
-                    onVolumeChange={(event) => {
-                        setVolume(Math.round(event.currentTarget.volume * 100));
-                    }}
-                    loop={
-                        repeatMode === "one" ||
-                        (repeatMode === "all" && queue.length === 1)
-                    }
-                    key={currentTrack.id}
-                    controls
-                    autoPlay
-                    preload="metadata"
-                    src={`https://api.audius.co/v1/tracks/${encodeURIComponent(currentTrack.id)}/stream`}
-                    className="h-10 w-full max-w-md sm:w-80"
-                    aria-label={`Audio player for ${currentTrack.title}`}
-                >
-                    Your browser does not support audio playback.
-                </audio>
-              </div>
+                        onTimeUpdate={(event) => {
+                            setCurrentTime(event.currentTarget.currentTime);
+                        }}
+                        onLoadedMetadata={(event) => {
+                            setDuration(event.currentTarget.duration);
+                            setCurrentTime(0);
+                            event.currentTarget.volume = volume / 100;
+                        }}
+                        onVolumeChange={(event) => {
+                            setVolume(Math.round(event.currentTarget.volume * 100));
+                        }}
+                        loop={
+                            repeatMode === "one" ||
+                            (repeatMode === "all" && queue.length === 1)
+                        }
+                        key={currentTrack.id}
+                        autoPlay
+                        preload="metadata"
+                        src={`https://api.audius.co/v1/tracks/${encodeURIComponent(currentTrack.id)}/stream`}
+                        className="hidden"
+                        aria-label={`Audio player for ${currentTrack.title}`}
+                    >
+                        Your browser does not support audio playback.
+                    </audio>
+
+                        </div>
+
+                        <div className="flex w-full items-center
+                        justify-center xl:w-[300px]
+                        xl:shrink-0 xl:justify-end">
+
+                        <div className="flex items-center gap-3">
+                            <Image
+                                src="/icons/volume.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                            />
+
+                            <div className="w-[74px]">
+                                <input
+                                    type="range"
+                                    min={0}
+                                    max={100}
+                                    value={volume}
+                                    onChange={handleVolumeChange}
+                                    aria-label="Volume"
+                                    className="player-progress rounded
+                                focus-visible:outline-2
+                                focus-visible:outline-accent"
+                                    style={{
+                                        backgroundImage: `linear-gradient(
+                                                        to right,
+                                                        var(--primary) ${volume}%,
+                                                        var(--border) ${volume}%
+                                                    )`,
+                                    }}
+                                />
+                            </div>
+
+                            <span className="text-[10px] text-secondary tabular-nums">
+                            {volume}%
+                        </span>
+                        </div>
+                </div>
+                </>
             ) : (
                 <p className="text-sm text-gray-400">
                     Choose a track to start listening

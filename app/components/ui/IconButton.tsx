@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef } from "react";
 
 type IconButtonVariant = "ghost" | "selected" | "primary";
 
-type IconButtonSize = "default" | "large";
+type IconButtonSize = "default" | "large" | "compact";
 
 type IconButtonProps = ComponentPropsWithoutRef<"button"> & {
     "aria-label": string;
@@ -19,6 +19,7 @@ const variants: Record<IconButtonVariant, string> = {
 const sizes: Record<IconButtonSize, string> = {
     default: "size-10",
     large: "size-[58px]",
+    compact: "size-9",
 };
 
 export default function IconButton({

@@ -56,7 +56,9 @@ type PlayerContextType = {
     cycleRepeatMode: () => void;
     shuffleEnabled: boolean;
     toggleShuffle: () => void;
+    favoritesLoaded: boolean;
 };
+
 
 const PlayerContext = createContext<PlayerContextType | null>(null);
 
@@ -126,6 +128,15 @@ export function PlayerProvider({
 
     const favorites = favoriteState?.tracks ?? [];
     const favoritesOwner = favoriteState?.owner ?? null;
+
+    const favoritesLoaded = Boolean(
+        isLoaded &&
+        isSignedIn &&
+        userId &&
+        sessionId &&
+        favoritesOwner === userId &&
+        favoriteState?.session === sessionId
+    );
 
     useEffect(() => {
         if (!isLoaded || !isSignedIn || !userId || !sessionId) return;
@@ -569,6 +580,7 @@ export function PlayerProvider({
                 cycleRepeatMode,
                 shuffleEnabled: playback.shuffleEnabled,
                 toggleShuffle,
+                favoritesLoaded,
             }}
         >
             {children}
