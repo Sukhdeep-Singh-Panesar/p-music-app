@@ -18,6 +18,8 @@
 
   --input-focus: #a5a7ff;
   --error: #fda4af;
+
+  --accent: #b6b8ff;
 }
 
 @theme inline {
@@ -69,6 +71,8 @@
 
   --color-input-focus: var(--input-focus);
   --color-error: var(--error);
+
+  --color-accent: var(--accent);
 }
 
 

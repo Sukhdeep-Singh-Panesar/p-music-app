@@ -3,7 +3,8 @@
 import { usePlayer } from "./PlayerProvider";
 import PlayerStatus from "./PlayerStatus";
 import { useRef, useState, type ChangeEvent } from "react";
-
+import IconButton from "./ui/IconButton";
+import Image from "next/image";
 export default function PlayerBar() {
     const {
         currentTrack,
@@ -117,14 +118,19 @@ export default function PlayerBar() {
                         Previous
                     </button>
 
-                    <button
-                        type="button"
+                    <IconButton
+                        variant="primary"
+                        size="large"
                         onClick={togglePlayback}
-                        className="rounded-lg bg-indigo-500 px-4 py-2 text-sm text-white"
+                        aria-label={isPlaying ? "Pause" : "Play"}
                     >
-                        {isPlaying ? "Pause" : "Play"}
-                    </button>
-
+                        <Image
+                            src={isPlaying ? "/icons/pause.svg" : "/icons/play.svg"}
+                            alt=""
+                            width={24}
+                            height={24}
+                        />
+                    </IconButton>
                     <button
                         type="button"
                         onClick={playNext}
