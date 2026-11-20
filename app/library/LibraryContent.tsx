@@ -5,6 +5,7 @@ import TrackCard from "../components/TrackCard";
 import { useState } from "react";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
+import MusicCard from "../components/ui/MusicCard";
 export default function LibraryPage() {
     const { favorites, playlists, createPlaylist, deletePlaylist } = usePlayer();
     const [playlistName, setPlaylistName] = useState("");
@@ -52,25 +53,19 @@ export default function LibraryPage() {
                         Create your first playlist to organize your favorite music.
                     </p>
                 )}
-                <div className="mt-4 space-y-3">
+                <div className="mt-4 grid grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4">
                     {playlists.map((playlist) => (
-                        <div
-                            key={playlist.id}
-                            className="rounded-lg bg-gray-800 p-4 text-white"
-                        >
-                            <Link
+                        <div key={playlist.id} className="min-w-0">
+                            <MusicCard
+                                title={playlist.name}
+                                description={`${playlist.tracks.length} tracks · By you`}
                                 href={`/playlist/${playlist.id}`}
-                                className="font-medium hover:underline"
-                            >
-                                {playlist.name}
-                            </Link>
-                            <p className="text-sm text-gray-400">
-                                {playlist.tracks.length} songs
-                            </p>
+                            />
+
                             <button
                                 type="button"
                                 onClick={() => deletePlaylist(playlist.id)}
-                                className="mt-3 text-sm text-red-400 hover:text-red-300"
+                                className="mt-2 px-2 text-xs text-error"
                             >
                                 Delete Playlist
                             </button>
