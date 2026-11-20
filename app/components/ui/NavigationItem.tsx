@@ -33,7 +33,6 @@ export default function NavigationItem({
                 : "font-normal text-secondary hover:bg-raised"
             }`}
         >
-            <span>{label}</span>
             <Image
                 src={active && activeIcon ? activeIcon : icon}
                 alt=""
@@ -41,6 +40,9 @@ export default function NavigationItem({
                 height={iconSize}
                 className="shrink-0"
             />
+
+            <span>{label}</span>
+
 
             {active && (
                 <span className="size-1 shrink-0 rounded-full bg-accent" />
