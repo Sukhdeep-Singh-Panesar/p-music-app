@@ -45,6 +45,16 @@
   --text-overline: 11px;
   --text-overline--line-height: 1.4;
   --text-overline--font-weight: 600;
+
+  --spacing-desktop-sidebar: 224px;
+  --spacing-desktop-gutter: 40px;
+  --spacing-desktop-header: 88px;
+  --spacing-desktop-player: 95px;
+
+  --radius-control: 8px;
+  --radius-card: 16px;
+  --radius-hero: 24px;
+  --radius-pill: 100px;
 }
 
 
