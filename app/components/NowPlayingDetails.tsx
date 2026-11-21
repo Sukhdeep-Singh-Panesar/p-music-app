@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePlayer, type PlayerTrack } from "./PlayerProvider";
 import { Show, SignInButton } from "@clerk/nextjs";
+import TrackCard from "./TrackCard";
 export default function NowPlayingDetails({
                                               routeTrack,
                                           }: {
@@ -15,6 +16,8 @@ export default function NowPlayingDetails({
         toggleFavorite,
         playlists,
         addTrackToPlaylist,
+        queue,
+        currentIndex,
     } = usePlayer();
 
     const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
@@ -43,12 +46,17 @@ export default function NowPlayingDetails({
     }
 
     return (
-        <main className="p-8">
-            <h1 className="text-3xl font-bold text-white">
+        <main className="flex w-full flex-col gap-6 px-5 pb-12 pt-4 lg:px-desktop-gutter">
+            <h1 className="text-page-title font-bold text-foreground">
                 Now Playing
             </h1>
 
-            <div className="mt-6 flex flex-col items-center text-center">
+            <div className="grid min-w-0 grid-cols-1 items-start gap-6
+                            xl:grid-cols-[minmax(0,640px)_minmax(0,1fr)]">
+
+                <section className="flex min-w-0 flex-col items-center
+                                    gap-6 rounded-hero border border-border
+                                    bg-surface p-6 text-center sm:p-8">
                 <div className="mb-6 flex aspect-square w-64 items-center justify-center rounded-xl bg-[#27264c]">
                     <span className="text-6xl" aria-hidden="true">🎵</span>
                 </div>
@@ -101,17 +109,48 @@ export default function NowPlayingDetails({
                 </button>
                 </Show>
 
-                <Show when="signed-out">
-                    <SignInButton>
-                        <button
-                            type="button"
-                            className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-white"
-                        >
-                            Sign in to save your music
-                        </button>
-                    </SignInButton>
-                </Show>
+                    <Show when="signed-out">
+                        <SignInButton>
+                            <button
+                                type="button"
+                                className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-white"
+                            >
+                                Sign in to save your music
+                            </button>
+                        </SignInButton>
+                    </Show>
 
+                </section>
+
+                <aside className="flex min-w-0 flex-col gap-4">
+                    <div className="flex items-center justify-between gap-3">
+                        <h2 className="text-section-title text-foreground">
+                            Up next
+                        </h2>
+
+                        <span className="text-xs text-secondary">
+                {Math.max(queue.length - currentIndex - 1, 0)} tracks remaining
+            </span>
+                    </div>
+
+                    {queue.length <= currentIndex + 1 ? (
+                        <p className="text-sm text-secondary">
+                            No more tracks in the queue.
+                        </p>
+                    ) : (
+                        <div className="flex flex-col gap-1">
+                            {queue.slice(currentIndex + 1, currentIndex + 6).map((song) => (
+                                <TrackCard
+                                    key={song.id}
+                                    id={song.id}
+                                    title={song.title}
+                                    artist={song.artist}
+                                    tracks={queue}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </aside>
             </div>
         </main>
     );
