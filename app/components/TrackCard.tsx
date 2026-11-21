@@ -22,8 +22,8 @@ export default function TrackCard({
         <Link
             onClick={() => selectTrack({ id, title, artist }, tracks)}
             href={`/now-playing?trackId=${encodeURIComponent(id)}`}
-            className={`flex min-h-16 items-center gap-4
-                        rounded-control px-3.5 py-2 transition-colors
+            className={`flex min-h-[68px] items-center gap-3
+                         rounded-control px-3.5 py-2 transition-colors
                         focus-visible:outline-solid
                         focus-visible:outline-2
                         focus-visible:outline-accent
@@ -31,8 +31,8 @@ export default function TrackCard({
             <Image
                 src="/artwork/default-cover.svg"
                 alt=""
-                width={42}
-                height={42}
+                width={44}
+                height={44}
                 className="shrink-0 rounded-control object-cover"
             />
 
