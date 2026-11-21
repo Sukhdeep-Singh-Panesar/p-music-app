@@ -7,6 +7,19 @@ import TrackCard from "./TrackCard";
 import NowPlayingArtwork from "./NowPlayingArtwork";
 import Image from "next/image";
 import IconButton from "./ui/IconButton";
+import { useAudio } from "./AudioProvider";
+
+function formatTime(time: number): string {
+    if (!Number.isFinite(time) || time < 0) {
+        return "0:00";
+    }
+
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
 export default function NowPlayingDetails({
                                               routeTrack,
                                           }: {
@@ -44,6 +57,16 @@ export default function NowPlayingDetails({
         ? favorites.some(fav => fav.id === track.id)
         : false;
 
+    const {
+        isPlaying,
+        togglePlayback,
+        currentTime,
+        duration,
+        progress,
+        volume,
+        seekTo,
+        changeVolume,
+    } = useAudio();
     if (!track) {
         return (
             <main className="p-8 text-white">
@@ -107,6 +130,38 @@ export default function NowPlayingDetails({
                         </Show>
                     </div>
 
+
+                    <div className="flex w-full flex-col gap-2">
+                        <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            step={0.1}
+                            value={progress}
+                            onChange={(event) =>
+                                seekTo(Number(event.currentTarget.value))
+                            }
+                            disabled={!Number.isFinite(duration) || duration <= 0}
+                            aria-label="Now Playing progress"
+                            className="player-progress rounded
+                                        focus-visible:outline-2
+                                        focus-visible:outline-accent"
+                            style={{
+                                backgroundImage: `linear-gradient(
+                                                    to right,
+                                                    var(--primary) ${progress}%,
+                                                    var(--border) ${progress}%
+                                                )`,
+                            }}
+                        />
+
+                        <div className="flex justify-between
+                                text-[10px] text-secondary tabular-nums">
+                            <span>{formatTime(currentTime)}</span>
+                            <span>{formatTime(duration)}</span>
+                        </div>
+                    </div>
+
                     <div className="flex items-center justify-center gap-2">
                         <IconButton
                             variant={shuffleEnabled ? "selected" : "ghost"}
@@ -135,6 +190,24 @@ export default function NowPlayingDetails({
                                 alt=""
                                 width={18}
                                 height={18}
+                            />
+                        </IconButton>
+
+                        <IconButton
+                            variant="primary"
+                            size="large"
+                            onClick={togglePlayback}
+                            aria-label={isPlaying ? "Pause" : "Play"}
+                        >
+                            <Image
+                                src={
+                                    isPlaying
+                                        ? "/icons/pause.svg"
+                                        : "/icons/play.svg"
+                                }
+                                alt=""
+                                width={24}
+                                height={24}
                             />
                         </IconButton>
 
@@ -177,7 +250,41 @@ export default function NowPlayingDetails({
                             )}
                         </IconButton>
                     </div>
+                    <div className="flex w-full items-center justify-end gap-3">
+                        <Image
+                            src="/icons/volume.svg"
+                            alt=""
+                            width={18}
+                            height={18}
+                        />
 
+                        <div className="w-[110px]">
+                            <input
+                                type="range"
+                                min={0}
+                                max={100}
+                                value={volume}
+                                onChange={(event) =>
+                                    changeVolume(Number(event.currentTarget.value))
+                                }
+                                aria-label="Now Playing volume"
+                                className="player-progress rounded
+                                            focus-visible:outline-2
+                                            focus-visible:outline-accent"
+                                style={{
+                                    backgroundImage: `linear-gradient(
+                                                        to right,
+                                                        var(--primary) ${volume}%,
+                                                        var(--border) ${volume}%
+                                                    )`,
+                                }}
+                            />
+                        </div>
+
+                        <span className="text-xs text-secondary tabular-nums">
+                            {volume}%
+                        </span>
+                    </div>
                 <Show when="signed-in">
                 {playlists.length === 0 && (
                     <p className="mt-4 text-sm text-gray-400">

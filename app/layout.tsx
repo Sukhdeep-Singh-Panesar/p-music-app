@@ -6,6 +6,7 @@ import { PlayerProvider } from "./components/PlayerProvider";
 import PlayerBar from "./components/PlayerBar";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "./components/Header";
+import { AudioProvider } from "./components/AudioProvider";
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
@@ -32,6 +33,7 @@ export default function RootLayout({
     <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
     <ClerkProvider>
           <PlayerProvider>
+              <AudioProvider>
                                      {/*  MAIN APP CONTAINER  */}
 
               <div className="flex min-h-screen flex-row bg-background">
@@ -51,6 +53,7 @@ export default function RootLayout({
           <PlayerBar />
                                      {/*  BOTTOM PLAYER BAR Done  */}
 
+            </AudioProvider>
       </PlayerProvider>
         </ClerkProvider>
       </body>

@@ -5,6 +5,7 @@ import PlayerStatus from "./PlayerStatus";
 import { useRef, useState, type ChangeEvent } from "react";
 import IconButton from "./ui/IconButton";
 import Image from "next/image";
+import { useAudio } from "./AudioProvider";
 export default function PlayerBar() {
     const {
         currentTrack,
@@ -18,39 +19,17 @@ export default function PlayerBar() {
         toggleShuffle,
     } = usePlayer();
 
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-
-    const [playingTrackId, setPlayingTrackId] =
-        useState<string | null>(null);
-
-    const [currentTime, setCurrentTime] = useState(0);
-
-    const [duration, setDuration] = useState(0);
-
-    const [volume, setVolume] = useState(100);
-
-    const isPlaying =
-        currentTrack !== null && playingTrackId === currentTrack.id;
-
-    const [playbackError, setPlaybackError] =
-        useState<string | null>(null);
-
-    function togglePlayback() {
-        const audio = audioRef.current;
-
-        if (!audio) return;
-
-        if (audio.paused) {
-            void audio.play().catch((error) => {
-                setPlaybackError("Unable to play this track.");
-                console.error("Audio playback failed:", error);
-            });
-        } else {
-            audio.pause();
-        }
-
-
-    }
+    const {
+        isPlaying,
+        currentTime,
+        duration,
+        volume,
+        progress,
+        playbackError,
+        togglePlayback,
+        seekTo,
+        changeVolume,
+    } = useAudio();
 
     function formatTime(time: number): string {
         if (!Number.isFinite(time) || time < 0) {
@@ -63,38 +42,7 @@ export default function PlayerBar() {
         return `${minutes}:${String(seconds).padStart(2, "0")}`;
     }
 
-    const progress =
-        Number.isFinite(duration) && duration > 0
-            ? Math.min(100, (currentTime / duration) * 100)
-            : 0;
 
-
-    function handleSeek(event: React.ChangeEvent<HTMLInputElement>) {
-        const audio = audioRef.current;
-
-        if (!audio || !Number.isFinite(duration) || duration <= 0) {
-            return;
-        }
-
-        const percentage = Number(event.currentTarget.value);
-
-        const newTime = (percentage / 100) * duration;
-
-        audio.currentTime = newTime;
-        setCurrentTime(newTime);
-    }
-
-    function handleVolumeChange(event: ChangeEvent<HTMLInputElement>) {
-        const newVolume = Number(event.currentTarget.value);
-
-        setVolume(newVolume);
-
-        const audio = audioRef.current;
-
-        if (audio) {
-            audio.volume = newVolume / 100;
-        }
-    }
     return (
         <footer
             aria-label="Music player"
@@ -207,7 +155,9 @@ export default function PlayerBar() {
                             max={100}
                             step={0.1}
                             value={progress}
-                            onChange={handleSeek}
+                            onChange={(event) =>
+                                seekTo(Number(event.currentTarget.value))
+                            }
                             disabled={!Number.isFinite(duration) || duration <= 0}
                             aria-label="Seek through song"
                             className="player-progress rounded
@@ -234,53 +184,6 @@ export default function PlayerBar() {
                             {playbackError}
                         </p>
                     )}
-                    <audio
-                        ref={audioRef}
-                        onPlay={() => {
-                            setPlayingTrackId(currentTrack.id);
-                            setPlaybackError(null);
-                        }}
-
-                        onLoadStart={() => {
-                            setCurrentTime(0);
-                            setDuration(0);
-                            setPlaybackError(null);
-                            setPlayingTrackId(null);
-                        }}
-
-                        onError={() => {
-                            setPlayingTrackId(null);
-                            setPlaybackError("This track could not be loaded.");
-                        }}                    onPause={() => setPlayingTrackId(null)}
-                        onEnded={() => {
-                            setPlayingTrackId(null);
-                            playNext();
-                        }}
-
-                        onTimeUpdate={(event) => {
-                            setCurrentTime(event.currentTarget.currentTime);
-                        }}
-                        onLoadedMetadata={(event) => {
-                            setDuration(event.currentTarget.duration);
-                            setCurrentTime(0);
-                            event.currentTarget.volume = volume / 100;
-                        }}
-                        onVolumeChange={(event) => {
-                            setVolume(Math.round(event.currentTarget.volume * 100));
-                        }}
-                        loop={
-                            repeatMode === "one" ||
-                            (repeatMode === "all" && queue.length === 1)
-                        }
-                        key={currentTrack.id}
-                        autoPlay
-                        preload="metadata"
-                        src={`https://api.audius.co/v1/tracks/${encodeURIComponent(currentTrack.id)}/stream`}
-                        className="hidden"
-                        aria-label={`Audio player for ${currentTrack.title}`}
-                    >
-                        Your browser does not support audio playback.
-                    </audio>
 
                         </div>
 
@@ -302,7 +205,9 @@ export default function PlayerBar() {
                                     min={0}
                                     max={100}
                                     value={volume}
-                                    onChange={handleVolumeChange}
+                                    onChange={(event) =>
+                                        changeVolume(Number(event.currentTarget.value))
+                                    }
                                     aria-label="Volume"
                                     className="player-progress rounded
                                 focus-visible:outline-2
