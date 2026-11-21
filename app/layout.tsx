@@ -4,9 +4,9 @@ import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { PlayerProvider } from "./components/PlayerProvider";
 import PlayerBar from "./components/PlayerBar";
-import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
-import { Suspense } from "react";
-
+import { ClerkProvider } from "@clerk/nextjs";
+import Header from "./components/Header";
+import { AudioProvider } from "./components/AudioProvider";
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
@@ -33,26 +33,16 @@ export default function RootLayout({
     <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
     <ClerkProvider>
           <PlayerProvider>
+              <AudioProvider>
                                      {/*  MAIN APP CONTAINER  */}
 
-      <div className="flex flex-row min-h-screen bg-[#0f172a] ">
-          {/*  LEFT SIDEBAR  */}
+              <div className="flex min-h-screen flex-row bg-background">
+                  {/*  LEFT SIDEBAR  */}
         <Sidebar />
 
           {/*  MAIN CONTENT AREA  */}
-          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-56">
-              <header className="flex items-center justify-end gap-4 p-4 text-white">
-                  <Suspense>
-                      <Show when="signed-out">
-                          <SignInButton />
-                          <SignUpButton />
-                      </Show>
-
-                      <Show when="signed-in">
-                          <UserButton />
-                      </Show>
-                  </Suspense>
-              </header>
+          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-desktop-sidebar">
+                <Header />
               {children}
           </div>
       </div>
@@ -63,6 +53,7 @@ export default function RootLayout({
           <PlayerBar />
                                      {/*  BOTTOM PLAYER BAR Done  */}
 
+            </AudioProvider>
       </PlayerProvider>
         </ClerkProvider>
       </body>

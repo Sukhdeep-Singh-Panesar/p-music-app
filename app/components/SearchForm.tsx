@@ -2,13 +2,39 @@
 
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
+import Image from "next/image";
+import { useId, useEffect, useRef } from "react";
 
 export default function SearchForm({
                                        initialQuery,
+                                       variant = "default",
                                    }: {
     initialQuery: string;
+    variant?: "default" | "header";
 }) {
     const router = useRouter();
+    const inputId = useId();
+    const searchRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (variant !== "header") return;
+
+        function handleKeyDown(event: KeyboardEvent) {
+            if (
+                (event.ctrlKey || event.metaKey) &&
+                event.key.toLowerCase() === "k"
+            ) {
+                event.preventDefault();
+                searchRef.current?.focus();
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [variant]);
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -23,14 +49,51 @@ export default function SearchForm({
         );
     }
 
+    if (variant === "header") {
+        return (
+            <form
+                onSubmit={handleSubmit}
+                className="flex h-11 w-full min-w-0 max-w-[420px]
+                items-center gap-2.5 rounded-pill
+                border border-border bg-surface px-4
+                focus-within:border-input-focus"
+            >
+                <button type="submit" aria-label="Search music">
+                    <Image
+                        src="/icons/search.svg"
+                        alt=""
+                        width={18}
+                        height={18}
+                    />
+                </button>
+
+                <input
+                    type="search"
+                    name="q"
+                    ref={searchRef}
+                    aria-keyshortcuts="Control+K Meta+K"
+                    aria-label="Search songs or artists"
+                    defaultValue={initialQuery}
+                    placeholder="Search songs or artists"
+                    className="min-w-0 flex-1 bg-transparent
+                    text-xs text-foreground outline-none
+                    placeholder:text-secondary"
+                />
+                <kbd className="hidden shrink-0 font-sans text-[10px] text-muted xl:block">
+                    Ctrl K
+                </kbd>
+            </form>
+        );
+    }
+
     return (
         <form onSubmit={handleSubmit} className="flex gap-3">
-            <label htmlFor="music-query" className="sr-only">
+            <label htmlFor={inputId} className="sr-only">
                 Search music
             </label>
 
             <input
-                id="music-query"
+                id={inputId}
                 type="search"
                 name="q"
                 defaultValue={initialQuery}
