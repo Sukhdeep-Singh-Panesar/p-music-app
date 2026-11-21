@@ -2,7 +2,6 @@
 
 import { usePlayer } from "./PlayerProvider";
 import PlayerStatus from "./PlayerStatus";
-import { useRef, useState, type ChangeEvent } from "react";
 import IconButton from "./ui/IconButton";
 import Image from "next/image";
 import { useAudio } from "./AudioProvider";
