@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { usePlayer, type PlayerTrack } from "./PlayerProvider";
 import { Show, SignInButton } from "@clerk/nextjs";
 import TrackCard from "./TrackCard";
+import NowPlayingArtwork from "./NowPlayingArtwork";
+import Image from "next/image";
+import IconButton from "./ui/IconButton";
 export default function NowPlayingDetails({
                                               routeTrack,
                                           }: {
@@ -18,6 +21,13 @@ export default function NowPlayingDetails({
         addTrackToPlaylist,
         queue,
         currentIndex,
+        playPrevious,
+        playNext,
+        repeatMode,
+        cycleRepeatMode,
+        shuffleEnabled,
+        toggleShuffle,
+        favoritesLoaded,
     } = usePlayer();
 
     const [selectedPlaylistId, setSelectedPlaylistId] = useState("");
@@ -57,28 +67,118 @@ export default function NowPlayingDetails({
                 <section className="flex min-w-0 flex-col items-center
                                     gap-6 rounded-hero border border-border
                                     bg-surface p-6 text-center sm:p-8">
-                <div className="mb-6 flex aspect-square w-64 items-center justify-center rounded-xl bg-[#27264c]">
-                    <span className="text-6xl" aria-hidden="true">🎵</span>
-                </div>
+                    <NowPlayingArtwork />
 
-                <h2 className="text-3xl font-bold text-white">
-                    {track.title}
-                </h2>
+                    <div className="flex w-full min-w-0 items-center justify-between gap-3">
+                        <div className="flex min-w-0 flex-col gap-1.5 text-left">
+                            <h2 className="break-words text-[34px] font-bold
+                                            leading-[1.12] text-foreground">
+                                {track.title}
+                            </h2>
 
-                <p className="mt-2 text-gray-400">
-                    by {track.artist}
-                </p>
+                            <p className="text-[17px] leading-[1.4] text-secondary">
+                                {track.artist}
+                            </p>
+                        </div>
+
+                        <Show when="signed-in">
+                            <IconButton
+                                variant={isFavorite ? "selected" : "ghost"}
+                                onClick={() => void toggleFavorite(track)}
+                                aria-label={
+                                    isFavorite
+                                        ? "Remove from favorites"
+                                        : "Add to favorites"
+                                }
+                                aria-pressed={isFavorite}
+                                disabled={!favoritesLoaded}
+                            >
+                                <Image
+                                    src={
+                                        isFavorite
+                                            ? "/icons/heart-active.svg"
+                                            : "/icons/heart.svg"
+                                    }
+                                    alt=""
+                                    width={20}
+                                    height={20}
+                                />
+                            </IconButton>
+                        </Show>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2">
+                        <IconButton
+                            variant={shuffleEnabled ? "selected" : "ghost"}
+                            onClick={toggleShuffle}
+                            aria-label="Shuffle"
+                            aria-pressed={shuffleEnabled}
+                        >
+                            <Image
+                                src="/icons/shuffle.svg"
+                                alt=""
+                                width={16}
+                                height={16}
+                            />
+                        </IconButton>
+
+                        <IconButton
+                            onClick={playPrevious}
+                            aria-label="Previous track"
+                            disabled={
+                                queue.length <= 1 ||
+                                (repeatMode !== "all" && currentIndex === 0)
+                            }
+                        >
+                            <Image
+                                src="/icons/skip-back.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                            />
+                        </IconButton>
+
+                        <IconButton
+                            onClick={playNext}
+                            aria-label="Next track"
+                            disabled={
+                                queue.length <= 1 ||
+                                (repeatMode !== "all" &&
+                                    currentIndex >= queue.length - 1)
+                            }
+                        >
+                            <Image
+                                src="/icons/skip-forward.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                            />
+                        </IconButton>
+
+                        <IconButton
+                            variant={repeatMode !== "off" ? "selected" : "ghost"}
+                            onClick={cycleRepeatMode}
+                            aria-label={`Repeat: ${repeatMode}`}
+                            aria-pressed={repeatMode !== "off"}
+                            title={`Repeat: ${repeatMode}`}
+                            className="relative"
+                        >
+                            <Image
+                                src="/icons/repeat.svg"
+                                alt=""
+                                width={16}
+                                height={16}
+                            />
+
+                            {repeatMode === "one" && (
+                                <span className="absolute right-1 top-1 text-[10px] text-accent">
+                                    1
+                                </span>
+                            )}
+                        </IconButton>
+                    </div>
 
                 <Show when="signed-in">
-                <button
-                    type="button"
-                    onClick={() => toggleFavorite(track)}
-                    aria-pressed={isFavorite}
-                    className="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-white"
-                >
-                    {isFavorite ? "♥ Saved" : "♡ Save to Favorites"}
-                </button>
-
                 {playlists.length === 0 && (
                     <p className="mt-4 text-sm text-gray-400">
                         Create a playlist in Your Library first.

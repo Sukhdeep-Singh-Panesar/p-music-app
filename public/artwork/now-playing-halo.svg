@@ -1,0 +1,17 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="362.88" height="332.64" viewBox="0 0 362.88 332.64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Orbital halo">
+<ellipse cx="181.44" cy="166.32" rx="181.44" ry="166.32" fill="url(#paint0_linear_0_6)"/>
+<mask id="stroke0_0_6" fill="white">
+<path d="M362.88 166.32C362.88 258.176 281.647 332.64 181.44 332.64C81.2335 332.64 0 258.176 0 166.32C0 74.464 81.2335 0 181.44 0C281.647 0 362.88 74.464 362.88 166.32Z"/>
+</mask>
+<ellipse cx="181.44" cy="166.32" rx="181.44" ry="166.32" stroke-width="43.2" stroke="#FDB8A6" mask="url(#stroke0_0_6)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_6" x1="0" y1="0" x2="0" y2="266.112" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FDB8A6"/>
+<stop offset="0.3" stop-color="#8B5CF6"/>
+<stop offset="0.6" stop-color="#181638"/>
+<stop offset="1" stop-color="#8B5CF6"/>
+</linearGradient>
+</defs>
+</svg>
