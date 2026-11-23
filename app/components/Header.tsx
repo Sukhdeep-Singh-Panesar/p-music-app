@@ -10,17 +10,24 @@ import SearchForm from "./SearchForm";
 import MobileNavigation from "./MobileNavigation";
 
 export default function Header() {
+
     return (
         <header
             className="flex min-h-desktop-header flex-wrap
-                items-center justify-between gap-4
-                px-4 py-4 md:px-desktop-gutter
-                lg:flex-nowrap"
+            items-center justify-between gap-4
+            px-4 py-4 md:px-desktop-gutter
+            lg:flex-nowrap"
         >
-            <MobileNavigation />
-            <SearchForm initialQuery="" variant="header" />
+            <div className="order-1 md:hidden">
+                <MobileNavigation />
+            </div>
 
-            <div className="flex shrink-0 items-center gap-4">
+            <div className="order-3 w-full min-w-0
+            md:order-1 md:w-auto md:flex-1">
+                <SearchForm initialQuery="" variant="header" />
+            </div>
+
+            <div className="order-2 flex shrink-0 items-center gap-4">
                 <Suspense>
                     <Show when="signed-out">
                         <SignInButton />
@@ -34,4 +41,5 @@ export default function Header() {
             </div>
         </header>
     );
+
 }
