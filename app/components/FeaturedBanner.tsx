@@ -24,16 +24,15 @@ export default function FeaturedBanner({
                 xl:flex-row"
         >
             <div className="flex min-w-0 flex-1 flex-col
-                justify-center gap-4 p-6 xl:p-8">
-
+                            justify-center gap-4 p-5 sm:p-6 xl:p-8">
                 <p className="text-[10px] font-semibold
                     text-focus">
                     FEATURED / TRENDING NOW
                 </p>
 
-                <h2 className="text-[34px] font-bold
-                    leading-[1.12] text-foreground
-                    xl:text-[46px]">
+                <h2 className="text-[28px] font-bold
+                                leading-[1.12] text-foreground
+                                sm:text-[34px] xl:text-[46px]">
                     Let the world fade out.
                 </h2>
 
@@ -74,9 +73,9 @@ export default function FeaturedBanner({
                 alt=""
                 width={440}
                 height={320}
-                className="h-[220px] w-full object-cover
-                    xl:h-[320px] xl:w-[440px]
-                    xl:shrink-0"
+                className="h-[170px] w-full object-cover
+                            sm:h-[220px] xl:h-[320px]
+                            xl:w-[440px] xl:shrink-0"
             />
         </section>
     );
