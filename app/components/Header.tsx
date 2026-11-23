@@ -7,8 +7,8 @@ import {
 
 import { Suspense } from "react";
 import SearchForm from "./SearchForm";
-import MobileNavigation from "./MobileNavigation";
-
+import Link from "next/link";
+import Image from "next/image";
 export default function Header() {
 
     return (
@@ -19,7 +19,21 @@ export default function Header() {
             lg:flex-nowrap"
         >
             <div className="order-1 md:hidden">
-                <MobileNavigation />
+                <Link
+                    href="/"
+                    className="order-1 flex items-center gap-2 md:hidden"
+                >
+                    <Image
+                        src="/icons/brand.svg"
+                        alt=""
+                        width={28}
+                        height={28}
+                    />
+
+                    <span className="text-lg font-bold text-foreground">
+                        P Music<span className="text-primary">.</span>
+                    </span>
+                </Link>
             </div>
 
             <div className="order-3 w-full min-w-0

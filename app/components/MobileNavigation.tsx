@@ -1,72 +1,76 @@
 
 "use client";
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const links = [
-    { href: "/", label: "Discover" },
-    { href: "/library", label: "Your Library" },
-    { href: "/now-playing", label: "Now Playing" },
+    {
+        href: "/",
+        label: "Discover",
+        icon: "/icons/compass.svg",
+        activeIcon: "/icons/compass-active.svg",
+    },
+    {
+        href: "/library",
+        label: "Library",
+        icon: "/icons/library.svg",
+        activeIcon: "/icons/library-active.svg",
+    },
+    {
+        href: "/now-playing",
+        label: "Now Playing",
+        icon: "/icons/audio-lines.svg",
+        activeIcon: "/icons/audio-lines-active.svg",
+    },
 ];
 
 export default function MobileNavigation() {
-    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
 
     return (
-        <div
-            className="relative md:hidden"
-            onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                    setIsOpen(false);
-                }
-            }}
+        <nav
+            aria-label="Mobile navigation"
+            className="fixed inset-x-0 bottom-0 z-40
+                flex h-[calc(64px+env(safe-area-inset-bottom))]
+                items-start border-t border-border bg-sidebar
+                px-2 pt-2 pb-[env(safe-area-inset-bottom)]
+                md:hidden"
         >
-            <button
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                aria-expanded={isOpen}
-                aria-controls="mobile-navigation"
-                className="flex h-11 items-center gap-2
-                    rounded-control border border-border
-                    bg-surface px-4 text-sm text-foreground"
-            >
-                <span aria-hidden="true">☰</span>
-                Menu
-            </button>
+            {links.map((link) => {
+                const active =
+                    pathname === link.href ||
+                    (link.href === "/library" &&
+                        pathname.startsWith("/playlist/"));
 
-            {isOpen && (
-                <nav
-                    id="mobile-navigation"
-                    aria-label="Mobile navigation"
-                    className="absolute left-0 top-full z-60 mt-2
-                        w-56 rounded-card border border-border
-                        bg-sidebar p-2 shadow-xl"
-                >
-                    {links.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            onClick={() => setIsOpen(false)}
-                            aria-current={
-                                pathname === link.href
-                                    ? "page"
-                                    : undefined
-                            }
-                            className={`block rounded-control px-4 py-3
-                                text-sm transition-colors
-                                ${pathname === link.href
-                                ? "bg-selected text-accent"
-                                : "text-foreground hover:bg-raised"
-                            }`}
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
-                </nav>
-            )}
-        </div>
+                return (
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        aria-current={active ? "page" : undefined}
+                        className={`flex h-12 min-w-0 flex-1
+                            flex-col items-center justify-center
+                            gap-1 rounded-control text-[11px]
+                            font-medium transition-colors
+                            focus-visible:outline-2
+                            focus-visible:outline-accent
+                            ${active
+                            ? "bg-selected text-accent"
+                            : "text-secondary hover:bg-raised"
+                        }`}
+                    >
+                        <Image
+                            src={active ? link.activeIcon : link.icon}
+                            alt=""
+                            width={20}
+                            height={20}
+                        />
+
+                        <span>{link.label}</span>
+                    </Link>
+                );
+            })}
+        </nav>
     );
 }

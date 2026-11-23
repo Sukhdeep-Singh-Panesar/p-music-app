@@ -45,8 +45,9 @@ export default function PlayerBar() {
     return (
         <footer
             aria-label="Music player"
-            className="fixed inset-x-0 bottom-0 z-50
-                        flex min-h-0 flex-col gap-1
+            className="fixed inset-x-0
+                        bottom-[calc(64px+env(safe-area-inset-bottom))]
+                        md:bottom-0 z-50 flex min-h-0 flex-col gap-1
                         border-t border-border bg-sidebar
                         px-3 py-2 text-foreground
                         sm:min-h-desktop-player sm:gap-3
