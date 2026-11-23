@@ -122,3 +122,13 @@ body {
   background: transparent;
   height: 4px;
 }
+
+
+/* Keep the header search field dark when browser autofill is used */
+.search-input:-webkit-autofill,
+.search-input:-webkit-autofill:hover,
+.search-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+  -webkit-text-fill-color: var(--foreground);
+  caret-color: var(--foreground);
+}

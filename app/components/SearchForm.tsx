@@ -75,9 +75,9 @@ export default function SearchForm({
                     aria-label="Search songs or artists"
                     defaultValue={initialQuery}
                     placeholder="Search songs or artists"
-                    className="min-w-0 flex-1 bg-transparent
-                    text-xs text-foreground outline-none
-                    placeholder:text-secondary"
+                    className="search-input min-w-0 flex-1 bg-transparent
+                               text-xs text-foreground outline-none
+                               placeholder:text-secondary"
                 />
                 <kbd className="hidden shrink-0 font-sans text-[10px] text-muted xl:block">
                     Ctrl K
