@@ -181,7 +181,6 @@ The main discovery, playback, authentication, favourites, playlist management, a
 
 - Track availability and streaming behaviour depend on the Audius API.
 - Personal library features require sign-in and a working PostgreSQL connection.
-- The repository does not yet include a verified live demo link or application screenshots; these can be added after deployment and capture.
 
 ## Author
 
