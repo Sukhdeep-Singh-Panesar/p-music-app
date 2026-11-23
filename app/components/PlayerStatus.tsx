@@ -3,6 +3,7 @@
 import { usePlayer } from "./PlayerProvider";
 import Image from "next/image";
 import IconButton from "./ui/IconButton";
+import Link from "next/link";
 
 export default function PlayerStatus() {
     const {
@@ -24,27 +25,33 @@ export default function PlayerStatus() {
         (track) => track.id === currentTrack.id
     );
 
+
     return (
         <div className="flex min-w-0 items-center gap-3.5">
-            <Image
-                src="/artwork/default-cover.svg"
-                alt=""
-                width={60}
-                height={60}
-                className="shrink-0 rounded-card"
-            />
+            <Link
+                href="/now-playing"
+                className="flex min-w-0 flex-1 items-center gap-3.5"
+            >
+                <Image
+                    src="/artwork/default-cover.svg"
+                    alt=""
+                    width={60}
+                    height={60}
+                    className="h-10 w-10 shrink-0 rounded-card
+                    sm:h-[60px] sm:w-[60px]"
+                />
 
-            <div className="flex min-w-0 flex-col gap-[3px]">
-                <p className="truncate text-sm font-semibold
-                leading-[1.4] text-foreground">
-                    {currentTrack.title}
-                </p>
+                <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                        {currentTrack.title}
+                    </p>
 
-                <p className="truncate text-xs leading-[1.4]
-                text-secondary">
-                    {currentTrack.artist}
-                </p>
-            </div>
+                    <p className="truncate text-xs text-secondary">
+                        {currentTrack.artist}
+                    </p>
+                </div>
+            </Link>
+
             <IconButton
                 variant={isFavorite ? "selected" : "ghost"}
                 onClick={() => void toggleFavorite(currentTrack)}
@@ -54,9 +61,11 @@ export default function PlayerStatus() {
                 title={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
                 <Image
-                    src={isFavorite
-                        ? "/icons/heart-active.svg"
-                        : "/icons/heart.svg"}
+                    src={
+                        isFavorite
+                            ? "/icons/heart-active.svg"
+                            : "/icons/heart.svg"
+                    }
                     alt=""
                     width={20}
                     height={20}
@@ -64,4 +73,5 @@ export default function PlayerStatus() {
             </IconButton>
         </div>
     );
+
 }

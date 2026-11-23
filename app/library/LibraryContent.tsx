@@ -122,15 +122,15 @@ export default function LibraryPage() {
                 <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_286px]">
 
                     <section className="flex min-w-0 flex-col gap-6
-                                        rounded-card bg-surface p-6 sm:flex-row sm:items-center">
+                                        rounded-card bg-surface p-4
+                                        sm:flex-row sm:items-center sm:p-6">
 
                         <Image
                             src="/artwork/library-highlight.svg"
                             alt=""
                             width={154}
                             height={154}
-                            className="shrink-0 rounded-card"
-                        />
+                            className="h-[112px] w-[112px] shrink-0 rounded-card sm:h-[154px] sm:w-[154px]"/>
 
                         <div className="flex min-w-0 flex-col items-start gap-3">
                             <p className="text-[10px] font-semibold text-accent">

@@ -7,6 +7,7 @@ import PlayerBar from "./components/PlayerBar";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "./components/Header";
 import { AudioProvider } from "./components/AudioProvider";
+import MobileNavigation from "./components/MobileNavigation";
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
@@ -41,7 +42,8 @@ export default function RootLayout({
         <Sidebar />
 
           {/*  MAIN CONTENT AREA  */}
-          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-desktop-sidebar">
+          <div className="min-w-0 flex-1 overflow-auto pb-[calc(11rem+env(safe-area-inset-bottom))]
+                          md:ml-desktop-sidebar md:pb-64 xl:pb-28">
                 <Header />
               {children}
           </div>
@@ -51,6 +53,7 @@ export default function RootLayout({
                                      {/*  BOTTOM PLAYER BAR  */}
 
           <PlayerBar />
+                  <MobileNavigation />
                                      {/*  BOTTOM PLAYER BAR Done  */}
 
             </AudioProvider>

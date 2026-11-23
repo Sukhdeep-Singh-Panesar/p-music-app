@@ -45,21 +45,51 @@ export default function PlayerBar() {
     return (
         <footer
             aria-label="Music player"
-            className="fixed inset-x-0 bottom-0 z-50
-                        flex min-h-desktop-player flex-col gap-3
+            className="fixed inset-x-0
+                        bottom-[calc(64px+env(safe-area-inset-bottom))]
+                        md:bottom-0 z-50 flex min-h-0 flex-col gap-1
                         border-t border-border bg-sidebar
-                        px-4 py-3 text-foreground
+                        px-3 py-2 text-foreground
+                        sm:min-h-desktop-player sm:gap-3
+                        sm:px-4 sm:py-3
                         xl:h-desktop-player xl:flex-row
                         xl:items-center xl:justify-between
                         xl:gap-6 xl:px-7 xl:py-0">
-            <div className="w-full min-w-0 xl:w-75 xl:shrink-0">
-                <PlayerStatus />
+            <div className="flex w-full min-w-0 items-center gap-2
+                md:block xl:w-75 xl:shrink-0">
+
+                <div className="min-w-0 flex-1">
+                    <PlayerStatus />
+                </div>
+
+                {currentTrack && (
+                    <div className="md:hidden">
+                        <IconButton
+                            variant="primary"
+                            size="compact"
+                            onClick={togglePlayback}
+                            aria-label={isPlaying ? "Pause" : "Play"}
+                        >
+                            <Image
+                                src={
+                                    isPlaying
+                                        ? "/icons/pause-small.svg"
+                                        : "/icons/play-small.svg"
+                                }
+                                alt=""
+                                width={17}
+                                height={17}
+                            />
+                        </IconButton>
+                    </div>
+                )}
             </div>
 
             {currentTrack ? (
                 <>
-                    <div className="flex w-full min-w-0 flex-col
-                                    items-center gap-2 xl:w-[440px] xl:shrink-0">
+                    <div className="hidden w-full min-w-0 flex-col
+                                    items-center gap-2 md:flex
+                                    xl:w-[440px] xl:shrink-0">
 
                         <div className="flex items-center justify-center gap-1">
 
@@ -147,6 +177,7 @@ export default function PlayerBar() {
                         </IconButton>
                     </div>
 
+
                     <div className="flex w-full flex-col gap-2">
                         <input
                             type="range"
@@ -186,9 +217,9 @@ export default function PlayerBar() {
 
                         </div>
 
-                        <div className="flex w-full items-center
-                        justify-center xl:w-[300px]
-                        xl:shrink-0 xl:justify-end">
+                    <div className="hidden w-full items-center
+                                    justify-center md:flex xl:w-[300px]
+                                    xl:shrink-0 xl:justify-end">
 
                         <div className="flex items-center gap-3">
                             <Image
@@ -227,11 +258,7 @@ export default function PlayerBar() {
                         </div>
                 </div>
                 </>
-            ) : (
-                <p className="text-sm text-gray-400">
-                    Choose a track to start listening
-                </p>
-            )}
+            )  : null}
         </footer>
     );
 }
