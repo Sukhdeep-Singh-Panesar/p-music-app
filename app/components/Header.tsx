@@ -7,6 +7,7 @@ import {
 
 import { Suspense } from "react";
 import SearchForm from "./SearchForm";
+import MobileNavigation from "./MobileNavigation";
 
 export default function Header() {
     return (
@@ -16,6 +17,7 @@ export default function Header() {
                 px-4 py-4 md:px-desktop-gutter
                 lg:flex-nowrap"
         >
+            <MobileNavigation />
             <SearchForm initialQuery="" variant="header" />
 
             <div className="flex shrink-0 items-center gap-4">
