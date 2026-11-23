@@ -2,6 +2,8 @@
 
 **Find your next feeling.**
 
+[**Live Demo**](https://p-music-app.vercel.app/) · [**Source Code**](https://github.com/Sukhdeep-Singh-Panesar/p-music-app)
+
 P Music is a full-stack music discovery and streaming web app that makes discovering tracks, listening to music, and organising personal playlists simple and seamless. It combines a responsive, custom-designed interface with real-time music content and authenticated, database-backed libraries.
 
 **Tech:** Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 · Audius API · Clerk · PostgreSQL (Neon) · Prisma 7
