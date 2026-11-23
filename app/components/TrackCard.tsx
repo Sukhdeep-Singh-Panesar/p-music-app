@@ -7,6 +7,7 @@ type TrackCardProps = {
     title: string;
     artist: string;
     tracks: PlayerTrack[];
+    artwork?: string;
 };
 
 export default function TrackCard({
@@ -14,6 +15,7 @@ export default function TrackCard({
                                      title,
                                       artist,
                                       tracks,
+                                      artwork = "/artwork/default-cover.svg",
                                   }: TrackCardProps) {
     const { selectTrack, currentTrack } = usePlayer();
 
@@ -29,7 +31,7 @@ export default function TrackCard({
                         focus-visible:outline-accent
                         ${isSelected ? "bg-selected" : "hover:bg-raised"}`}        >
             <Image
-                src="/artwork/default-cover.svg"
+                src={artwork}
                 alt=""
                 width={44}
                 height={44}

@@ -15,6 +15,14 @@ type AudiusResponse = {
     data: AudiusTrack[];
 };
 
+const trackArtworks = [
+    "/artwork/default-cover.svg",
+    "/artwork/frequency-1.svg",
+    "/artwork/frequency-2.svg",
+    "/artwork/frequency-3.svg",
+    "/artwork/frequency-4.svg",
+    "/artwork/library-highlight.svg",
+];
 
 async function getTrendingTracks(): Promise<AudiusTrack[]> {
     const response = await fetch(
@@ -99,13 +107,14 @@ export default async function Home() {
                     </h2>
 
                     <div className="flex flex-col gap-1">
-                        {tracks.slice(0, 4).map((track) => (
+                        {tracks.slice(0, 4).map((track, index) => (
                             <TrackCard
                                 key={track.id}
                                 id={track.id}
                                 title={track.title}
                                 artist={track.user.name}
                                 tracks={playbackTracks}
+                                artwork={trackArtworks[index]}
                             />
                         ))}
                     </div>
@@ -132,13 +141,14 @@ export default async function Home() {
                     </p>
 
                     <div className="flex flex-col gap-1">
-                        {tracks.slice(4, 6).map((track) => (
+                        {tracks.slice(4, 6).map((track, index) => (
                             <TrackCard
                                 key={track.id}
                                 id={track.id}
                                 title={track.title}
                                 artist={track.user.name}
                                 tracks={playbackTracks}
+                                artwork={trackArtworks[index + 4]}
                             />
                         ))}
                     </div>

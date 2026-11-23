@@ -9,6 +9,12 @@ export default function Sidebar() {
     const pathname = usePathname();
     const { playlists, playlistsLoaded } = usePlayer();
     const { isLoaded, isSignedIn } = useAuth();
+    const playlistArtworks = [
+        "/artwork/library-playlist-1.svg",
+        "/artwork/library-playlist-2.svg",
+        "/artwork/library-playlist-3.svg",
+        "/artwork/library-playlist-4.svg",
+    ];
     return (
         <aside className="fixed inset-y-0 left-0 z-20 hidden
                             w-desktop-sidebar border-r border-border
@@ -70,7 +76,7 @@ export default function Sidebar() {
                     </p>
                 )}
                 <ul className="mt-3 flex flex-col gap-2">
-                    {playlists.map((playlist) => (
+                    {playlists.map((playlist, index) => (
                         <li key={playlist.id}>
                             <Link
                                 href={`/playlist/${playlist.id}`}
@@ -90,7 +96,7 @@ export default function Sidebar() {
                                         }`}
                             >
                                 <Image
-                                    src="/artwork/default-cover.svg"
+                                    src={playlistArtworks[index % playlistArtworks.length]}
                                     alt=""
                                     width={34}
                                     height={34}
