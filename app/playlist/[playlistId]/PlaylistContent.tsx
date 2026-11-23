@@ -61,10 +61,9 @@ export default function PlaylistPage() {
                 </span>
             </nav>
 
-            <section className="flex flex-col items-start gap-8
-                                rounded-hero bg-selected p-6 sm:flex-row sm:items-center
-                                sm:p-7">
-
+            <section className="flex flex-col items-start gap-4
+                                rounded-hero bg-selected p-4
+                                sm:flex-row sm:items-center sm:gap-8 sm:p-7">
                 <Image
                     src="/artwork/playlist-hero.svg"
                     alt=""
@@ -192,8 +191,9 @@ export default function PlaylistPage() {
 
 
             <section className="flex min-w-0 flex-col gap-2">
-                <div className="grid grid-cols-[24px_minmax(0,1fr)_40px_40px]
-                                items-center gap-3 border-b border-border px-3.5 py-3
+                <div className="grid grid-cols-[18px_minmax(0,1fr)_36px_36px]
+                                sm:grid-cols-[24px_minmax(0,1fr)_40px_40px]
+                                items-center gap-2 sm:gap-3 border-b border-border px-3.5 py-3
                                 text-[11px] text-muted">
 
                     <span>#</span>
@@ -219,10 +219,11 @@ export default function PlaylistPage() {
                                 <li
                                     key={track.id}
                                     className={`grid min-h-16
-                                            grid-cols-[24px_minmax(0,1fr)_40px_40px]
-                                            items-center gap-3 rounded-control
-                                            px-3.5 py-2 transition-colors
-                                            ${isSelected ? "bg-selected" : "hover:bg-raised"
+                                                grid-cols-[18px_minmax(0,1fr)_36px_36px]
+                                                sm:grid-cols-[24px_minmax(0,1fr)_40px_40px]
+                                                items-center gap-2 sm:gap-3 rounded-control
+                                                px-3.5 py-2 transition-colors
+                                                ${isSelected ? "bg-selected" : "hover:bg-raised"
                                     }`}
                                 >
                         <span className="text-xs tabular-nums text-muted">
@@ -273,6 +274,7 @@ export default function PlaylistPage() {
                                     </Link>
 
                                     <IconButton
+                                        className="max-sm:size-9"
                                         variant={isFavorite ? "selected" : "ghost"}
                                         aria-label={
                                             isFavorite
@@ -297,6 +299,7 @@ export default function PlaylistPage() {
 
                                     <IconButton
                                         variant="ghost"
+                                        className="max-sm:size-9"
                                         aria-label={`Remove ${track.title} from playlist`}
                                         onClick={() =>
                                             void removeTrackFromPlaylist(

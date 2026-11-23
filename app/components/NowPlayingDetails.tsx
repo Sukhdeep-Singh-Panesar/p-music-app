@@ -88,14 +88,15 @@ export default function NowPlayingDetails({
                             xl:grid-cols-[minmax(0,640px)_minmax(0,1fr)]">
 
                 <section className="flex min-w-0 flex-col items-center
-                                    gap-6 rounded-hero border border-border
-                                    bg-surface p-6 text-center sm:p-8">
+                                   gap-4 rounded-hero border border-border
+                                    bg-surface p-4 text-center sm:gap-6 sm:p-8">
                     <NowPlayingArtwork />
 
                     <div className="flex w-full min-w-0 items-center justify-between gap-3">
                         <div className="flex min-w-0 flex-col gap-1.5 text-left">
-                            <h2 className="break-words text-[34px] font-bold
-                                            leading-[1.12] text-foreground">
+                            <h2 className="break-words text-[24px] font-bold
+                                            leading-[1.12] text-foreground
+                                            sm:text-[34px]">
                                 {track.title}
                             </h2>
 
@@ -162,7 +163,7 @@ export default function NowPlayingDetails({
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-1 sm:gap-2">
                         <IconButton
                             variant={shuffleEnabled ? "selected" : "ghost"}
                             onClick={toggleShuffle}
