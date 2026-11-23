@@ -1,5 +1,5 @@
 "use client";
-
+import PlaylistDropdown from "./PlaylistDropdown";
 import { useEffect, useState } from "react";
 import { usePlayer, type PlayerTrack } from "./PlayerProvider";
 import { Show, SignInButton } from "@clerk/nextjs";
@@ -293,20 +293,10 @@ export default function NowPlayingDetails({
                     </p>
                 )}
 
-                <select
-                    disabled={playlists.length === 0}
-                    value={selectedPlaylistId}
-                    onChange={(event) => setSelectedPlaylistId(event.target.value)}
-                    className="mt-4 rounded-lg bg-gray-800 px-4 py-2 text-white"
-                >
-                    <option value="">Select a playlist</option>
-
-                    {playlists.map((playlist) => (
-                        <option key={playlist.id} value={playlist.id}>
-                            {playlist.name}
-                        </option>
-                    ))}
-                </select>
+                    <PlaylistDropdown
+                        value={selectedPlaylistId}
+                        onChange={setSelectedPlaylistId}
+                    />
                 <button
                     type="button"
                     onClick={() => addTrackToPlaylist(selectedPlaylistId, track)}
