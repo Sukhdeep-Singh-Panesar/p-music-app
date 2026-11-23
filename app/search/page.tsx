@@ -62,6 +62,11 @@ export default async function SearchPage({
                             Search for a song or artist to get started.
                         </p>
                     )}
+                    {q.trim() && tracks.length === 0 && (
+                        <p className="col-span-full mt-6 text-gray-400">
+                            No tracks found. Try another song or artist.
+                        </p>
+                    )}
 
                     {tracks.map((track) => (
                         <TrackCard
