@@ -41,7 +41,7 @@ export default function RootLayout({
         <Sidebar />
 
           {/*  MAIN CONTENT AREA  */}
-          <div className="min-w-0 flex-1 overflow-auto pb-36 sm:pb-24 md:ml-desktop-sidebar">
+          <div className="min-w-0 flex-1 overflow-auto pb-24 sm:pb-28 md:ml-desktop-sidebar md:pb-64 xl:pb-28">
                 <Header />
               {children}
           </div>

@@ -257,11 +257,7 @@ export default function PlayerBar() {
                         </div>
                 </div>
                 </>
-            ) : (
-                <p className="text-sm text-gray-400">
-                    Choose a track to start listening
-                </p>
-            )}
+            )  : null}
         </footer>
     );
 }
