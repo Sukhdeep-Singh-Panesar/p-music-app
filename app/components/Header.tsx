@@ -41,21 +41,43 @@ export default function Header() {
                 <SearchForm initialQuery="" variant="header" />
             </div>
 
-            <div className="order-2 flex shrink-0 items-center gap-4">
+            <div className="order-2 flex shrink-0 items-center gap-2">
                 <Suspense>
+
                     <Show when="signed-out">
                         <SignInButton>
-                            <button type="button" className="cursor-pointer">
-                                Sign in
+                            <button
+                                type="button"
+                                className="cursor-pointer whitespace-nowrap rounded-full
+                                           border border-border px-4 py-2
+                                           text-sm font-medium text-foreground
+                                           transition-colors duration-200
+                                           hover:border-primary hover:bg-raised
+                                           focus-visible:outline-2
+                                           focus-visible:outline-offset-2
+                                           focus-visible:outline-focus"
+                                            >
+                                Sign In
                             </button>
                         </SignInButton>
 
                         <SignUpButton>
-                            <button type="button" className="cursor-pointer">
-                                Sign up
+                            <button
+                                type="button"
+                                className="cursor-pointer whitespace-nowrap rounded-full
+                                           bg-primary px-5 py-2 text-sm font-semibold
+                                           text-white shadow-sm shadow-indigo-950/30
+                                           transition-colors duration-200
+                                           hover:bg-primary-hover
+                                           focus-visible:outline-2
+                                           focus-visible:outline-offset-2
+                                           focus-visible:outline-focus"
+                            >
+                                Sign Up
                             </button>
                         </SignUpButton>
                     </Show>
+
 
                     <Show when="signed-in">
                         <UserButton />
