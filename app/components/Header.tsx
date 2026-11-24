@@ -44,8 +44,17 @@ export default function Header() {
             <div className="order-2 flex shrink-0 items-center gap-4">
                 <Suspense>
                     <Show when="signed-out">
-                        <SignInButton />
-                        <SignUpButton />
+                        <SignInButton>
+                            <button type="button" className="cursor-pointer">
+                                Sign in
+                            </button>
+                        </SignInButton>
+
+                        <SignUpButton>
+                            <button type="button" className="cursor-pointer">
+                                Sign up
+                            </button>
+                        </SignUpButton>
                     </Show>
 
                     <Show when="signed-in">

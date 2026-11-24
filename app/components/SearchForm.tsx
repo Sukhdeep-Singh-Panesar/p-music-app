@@ -58,7 +58,11 @@ export default function SearchForm({
                 border border-border bg-surface px-4
                 focus-within:border-input-focus"
             >
-                <button type="submit" aria-label="Search music">
+                <button
+                    type="submit"
+                    aria-label="Search music"
+                    className="cursor-pointer"
+                >
                     <Image
                         src="/icons/search.svg"
                         alt=""
@@ -103,7 +107,7 @@ export default function SearchForm({
 
             <button
                 type="submit"
-                className="shrink-0 rounded-lg bg-indigo-500 px-5 text-white"
+                className="shrink-0 rounded-lg bg-indigo-500 px-5 text-white cursor-pointer"
             >
                 Search
             </button>
